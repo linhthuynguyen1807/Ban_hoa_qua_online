@@ -1,4 +1,4 @@
-﻿package com.fruitmkt.model.entity;
+package com.fruitmkt.model.entity;
 
 /**
  * Product — Ánh xạ bảng DB tương ứng.

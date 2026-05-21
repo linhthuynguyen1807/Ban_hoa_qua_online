@@ -1,4 +1,4 @@
-﻿package com.fruitmkt.filter;
+package com.fruitmkt.filter;
 
 import com.fruitmkt.config.AppConfig;
 import jakarta.servlet.*;

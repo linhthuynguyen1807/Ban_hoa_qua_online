@@ -1,4 +1,4 @@
-﻿package com.fruitmkt.dao;
+package com.fruitmkt.dao;
 
 import com.fruitmkt.dao.base.BaseDAO;
 import com.fruitmkt.model.entity.Category;
@@ -8,59 +8,105 @@ import java.util.*;
 /**
  * CategoryDAO — DAO cho entity Category.
  *
- * QUY TẮC:
- *   - Chỉ chứa SQL, không chứa business logic
- *   - Dùng PreparedStatement, KHÔNG nối chuỗi SQL
- *   - Mỗi method ném SQLException để Service xử lý
- *   - Dùng try-with-resources cho Connection + PreparedStatement
- *
  * @author fruitmkt-team
  */
 public class CategoryDAO extends BaseDAO {
 
     /**
-     * TODO: Implement — findById(int id)
+     * Tìm danh mục theo ID.
      */
     public List<Category> findById(int id) throws SQLException {
-        // TODO: Viết SQL và xử lý ResultSet ở đây
-        throw new UnsupportedOperationException("Not implemented yet: findById(int id)");
+        List<Category> list = new ArrayList<>();
+        String sql = "SELECT * FROM categories WHERE category_id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    list.add(mapRow(rs));
+                }
+            }
+        }
+        return list;
     }
 
     /**
-     * TODO: Implement — findAll()
+     * Lấy toàn bộ danh mục sắp xếp theo display_order.
      */
     public List<Category> findAll() throws SQLException {
-        // TODO: Viết SQL và xử lý ResultSet ở đây
-        throw new UnsupportedOperationException("Not implemented yet: findAll()");
+        List<Category> list = new ArrayList<>();
+        String sql = "SELECT * FROM categories ORDER BY display_order ASC";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                list.add(mapRow(rs));
+            }
+        }
+        return list;
     }
 
     /**
-     * TODO: Implement — findAllActive()
+     * Lấy toàn bộ danh mục đang hoạt động.
      */
     public List<Category> findAllActive() throws SQLException {
-        // TODO: Viết SQL và xử lý ResultSet ở đây
-        throw new UnsupportedOperationException("Not implemented yet: findAllActive()");
+        List<Category> list = new ArrayList<>();
+        String sql = "SELECT * FROM categories WHERE is_active = 1 ORDER BY display_order ASC";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                list.add(mapRow(rs));
+            }
+        }
+        return list;
     }
 
     /**
-     * TODO: Implement — save(Category category)
+     * Lưu danh mục mới vào DB.
      */
     public int save(Category category) throws SQLException {
-        // TODO: Viết SQL và xử lý ResultSet ở đây
-        throw new UnsupportedOperationException("Not implemented yet: save(Category category)");
+        String sql = "INSERT INTO categories (name, slug, display_order, is_active) VALUES (?, ?, ?, ?)";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setString(1, category.getName());
+            ps.setString(2, category.getSlug());
+            ps.setInt(3, category.getDisplayOrder());
+            ps.setBoolean(4, category.getIsActive());
+            ps.executeUpdate();
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        }
+        throw new SQLException("Lưu danh mục thất bại, không lấy được mã khóa tự tăng.");
     }
 
     /**
-     * TODO: Implement — update(Category category)
+     * Cập nhật thông tin danh mục.
      */
     public void update(Category category) throws SQLException {
-        // TODO: Viết SQL và xử lý ResultSet ở đây
-        throw new UnsupportedOperationException("Not implemented yet: update(Category category)");
+        String sql = "UPDATE categories SET name = ?, slug = ?, display_order = ?, is_active = ? WHERE category_id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+          ps.setString(1, category.getName());
+          ps.setString(2, category.getSlug());
+          ps.setInt(3, category.getDisplayOrder());
+          ps.setBoolean(4, category.getIsActive());
+          ps.setInt(5, category.getCategoryId());
+          ps.executeUpdate();
+        }
     }
 
-    /** Ánh xạ ResultSet -> Category — gọi trong mọi query SELECT */
+    /** Ánh xạ ResultSet -> Category */
     private Category mapRow(ResultSet rs) throws SQLException {
-        // TODO: rs.getInt(), rs.getString()... theo Schema.sql
-        throw new UnsupportedOperationException("mapRow not implemented");
+        Category category = new Category();
+        category.setCategoryId(rs.getInt("category_id"));
+        category.setName(rs.getString("name"));
+        category.setSlug(rs.getString("slug"));
+        category.setDisplayOrder(rs.getInt("display_order"));
+        category.setIsActive(rs.getBoolean("is_active"));
+        return category;
     }
 }

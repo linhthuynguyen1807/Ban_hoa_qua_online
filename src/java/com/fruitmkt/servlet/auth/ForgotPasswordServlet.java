@@ -1,4 +1,4 @@
-﻿package com.fruitmkt.servlet.auth;
+package com.fruitmkt.servlet.auth;
 
 import com.fruitmkt.config.AppConfig;
 import com.fruitmkt.util.SessionUtil;
@@ -34,32 +34,16 @@ public class ForgotPasswordServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        // TODO: 1. Kiểm tra session/quyền nếu cần
-        //        2. Đọc request parameters
-        //        3. Gọi service để lấy data
-        //        4. Set attributes vào request
-        //        5. Forward đến JSP tương ứng
-        //
-        // Ví dụ:
-        // req.setAttribute("data", service.getData(...));
-        // req.getRequestDispatcher("/WEB-INF/jsp/auth/xxx.jsp").forward(req, resp);
-        throw new UnsupportedOperationException("doGet not implemented: ForgotPasswordServlet");
+        // Forward trực tiếp đến trang JSP quên mật khẩu an toàn nằm sau WEB-INF
+        req.getRequestDispatcher("/WEB-INF/jsp/auth/forgot-password.jsp").forward(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        // TODO: 1. Đọc params / JSON body
-        //        2. Validate input
-        //        3. Gọi service
-        //        4. Set flash message
-        //        5. Redirect (PRG pattern)
-        //
-        // Ví dụ:
-        // req.getSession().setAttribute(AppConfig.SESSION_FLASH_MSG, "Thành công!");
-        // req.getSession().setAttribute(AppConfig.SESSION_FLASH_TYPE, "success");
-        // resp.sendRedirect(req.getContextPath() + "/..");
-        throw new UnsupportedOperationException("doPost not implemented: ForgotPasswordServlet");
+        // Cảnh báo tạm thời khi submit forgot password nhưng chưa code logic:
+        req.setAttribute("errorMsg", "Chức năng quên mật khẩu đang được cấu hình. Vui lòng tự code tay logic đặt lại mật khẩu!");
+        req.getRequestDispatcher("/WEB-INF/jsp/auth/forgot-password.jsp").forward(req, resp);
     }
 
 }

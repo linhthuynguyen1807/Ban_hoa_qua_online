@@ -1,4 +1,4 @@
-﻿package com.fruitmkt.tag;
+package com.fruitmkt.tag;
 
 import com.fruitmkt.config.AppConfig;
 import com.fruitmkt.model.entity.User;

@@ -1,6 +1,7 @@
-﻿package com.fruitmkt.dao;
+package com.fruitmkt.dao;
 
 import com.fruitmkt.dao.base.BaseDAO;
+import com.fruitmkt.model.entity.ChatMessage;
 import com.fruitmkt.model.entity.ChatSession;
 import java.sql.*;
 import java.util.*;

@@ -1,4 +1,4 @@
-﻿package com.fruitmkt.dao;
+package com.fruitmkt.dao;
 
 import com.fruitmkt.dao.base.BaseDAO;
 import com.fruitmkt.model.entity.Product;
@@ -19,80 +19,271 @@ import java.util.*;
 public class ProductDAO extends BaseDAO {
 
     /**
-     * TODO: Implement — findById(int id)
+     * Tìm sản phẩm theo ID.
      */
     public List<Product> findById(int id) throws SQLException {
-        // TODO: Viết SQL và xử lý ResultSet ở đây
-        throw new UnsupportedOperationException("Not implemented yet: findById(int id)");
+        List<Product> list = new ArrayList<>();
+        String sql = "SELECT * FROM products WHERE product_id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    list.add(mapRow(rs));
+                }
+            }
+        }
+        return list;
     }
 
     /**
-     * TODO: Implement — findAll(int page, int pageSize)
+     * Lấy danh sách toàn bộ sản phẩm có phân trang.
      */
     public List<Product> findAll(int page, int pageSize) throws SQLException {
-        // TODO: Viết SQL và xử lý ResultSet ở đây
-        throw new UnsupportedOperationException("Not implemented yet: findAll(int page, int pageSize)");
+        List<Product> list = new ArrayList<>();
+        int offset = (page - 1) * pageSize;
+        String sql = "SELECT * FROM products ORDER BY product_id DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, offset);
+            ps.setInt(2, pageSize);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(mapRow(rs));
+                }
+            }
+        }
+        return list;
     }
 
     /**
-     * TODO: Implement — findByOwner(int ownerId)
+     * Lấy danh sách sản phẩm theo ID của chủ cửa hàng.
      */
     public List<Product> findByOwner(int ownerId) throws SQLException {
-        // TODO: Viết SQL và xử lý ResultSet ở đây
-        throw new UnsupportedOperationException("Not implemented yet: findByOwner(int ownerId)");
+        List<Product> list = new ArrayList<>();
+        String sql = "SELECT * FROM products WHERE owner_id = ? ORDER BY product_id DESC";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, ownerId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(mapRow(rs));
+                }
+            }
+        }
+        return list;
     }
 
     /**
-     * TODO: Implement — findByCategory(int categoryId, int page, int pageSize)
+     * Lấy danh sách sản phẩm theo Category ID có phân trang.
      */
     public List<Product> findByCategory(int categoryId, int page, int pageSize) throws SQLException {
-        // TODO: Viết SQL và xử lý ResultSet ở đây
-        throw new UnsupportedOperationException("Not implemented yet: findByCategory(int categoryId, int page, int pageSize)");
+        List<Product> list = new ArrayList<>();
+        int offset = (page - 1) * pageSize;
+        String sql = "SELECT * FROM products WHERE category_id = ? ORDER BY product_id DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, categoryId);
+            ps.setInt(2, offset);
+            ps.setInt(3, pageSize);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(mapRow(rs));
+                }
+            }
+        }
+        return list;
     }
 
     /**
-     * TODO: Implement — search(String keyword, Integer categoryId, java.math.BigDecimal minPrice, java.math.BigDecimal maxPrice, int page, int pageSize)
+     * Tìm kiếm sản phẩm theo từ khóa, danh mục, khoảng giá và phân trang.
      */
-    public Product search(String keyword, Integer categoryId, java.math.BigDecimal minPrice, java.math.BigDecimal maxPrice, int page, int pageSize) throws SQLException {
-        // TODO: Viết SQL và xử lý ResultSet ở đây
-        throw new UnsupportedOperationException("Not implemented yet: search(String keyword, Integer categoryId, java.math.BigDecimal minPrice, java.math.BigDecimal maxPrice, int page, int pageSize)");
+    public List<Product> search(String keyword, Integer categoryId, java.math.BigDecimal minPrice, java.math.BigDecimal maxPrice, int page, int pageSize) throws SQLException {
+        List<Product> list = new ArrayList<>();
+        StringBuilder sql = new StringBuilder("SELECT DISTINCT p.* FROM products p ");
+        if (minPrice != null || maxPrice != null) {
+            sql.append("JOIN product_variants pv ON p.product_id = pv.product_id ");
+        }
+        sql.append("WHERE 1=1 ");
+        
+        List<Object> params = new ArrayList<>();
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            sql.append("AND (p.name LIKE ? OR p.description LIKE ?) ");
+            String k = "%" + keyword.trim() + "%";
+            params.add(k);
+            params.add(k);
+        }
+        if (categoryId != null) {
+            sql.append("AND p.category_id = ? ");
+            params.add(categoryId);
+        }
+        if (minPrice != null) {
+            sql.append("AND pv.price >= ? ");
+            params.add(minPrice);
+        }
+        if (maxPrice != null) {
+            sql.append("AND pv.price <= ? ");
+            params.add(maxPrice);
+        }
+        
+        sql.append("ORDER BY p.product_id DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
+        int offset = (page - 1) * pageSize;
+        params.add(offset);
+        params.add(pageSize);
+        
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(mapRow(rs));
+                }
+            }
+        }
+        return list;
     }
 
     /**
-     * TODO: Implement — save(Product product)
+     * Lưu sản phẩm mới vào DB.
      */
     public int save(Product product) throws SQLException {
-        // TODO: Viết SQL và xử lý ResultSet ở đây
-        throw new UnsupportedOperationException("Not implemented yet: save(Product product)");
+        String sql = "INSERT INTO products (owner_id, category_id, name, description, origin_country, origin_region, harvest_date, shelf_life_days, storage_instruction, status, view_count, rating, sold_quantity, created_at, updated_at) "
+                   + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, GETDATE(), GETDATE())";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setInt(1, product.getOwnerId());
+            ps.setInt(2, product.getCategoryId());
+            ps.setString(3, product.getName());
+            ps.setString(4, product.getDescription());
+            ps.setString(5, product.getOriginCountry());
+            ps.setString(6, product.getOriginRegion());
+            
+            if (product.getHarvestDate() != null) {
+                ps.setDate(7, java.sql.Date.valueOf(product.getHarvestDate()));
+            } else {
+                ps.setNull(7, Types.DATE);
+            }
+            
+            if (product.getShelfLifeDays() != null) {
+                ps.setInt(8, product.getShelfLifeDays());
+            } else {
+                ps.setNull(8, Types.INTEGER);
+            }
+            
+            ps.setString(9, product.getStorageInstruction());
+            ps.setString(10, product.getStatus() != null ? product.getStatus() : "ACTIVE");
+            ps.setInt(11, product.getViewCount());
+            ps.setBigDecimal(12, product.getRating() != null ? product.getRating() : java.math.BigDecimal.ZERO);
+            ps.setInt(13, product.getSoldQuantity());
+            
+            ps.executeUpdate();
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        }
+        throw new SQLException("Lưu sản phẩm thất bại, không lấy được mã khóa tự tăng.");
     }
 
     /**
-     * TODO: Implement — update(Product product)
+     * Cập nhật thông tin sản phẩm.
      */
     public void update(Product product) throws SQLException {
-        // TODO: Viết SQL và xử lý ResultSet ở đây
-        throw new UnsupportedOperationException("Not implemented yet: update(Product product)");
+        String sql = "UPDATE products SET owner_id = ?, category_id = ?, name = ?, description = ?, origin_country = ?, origin_region = ?, harvest_date = ?, shelf_life_days = ?, storage_instruction = ?, status = ?, view_count = ?, rating = ?, sold_quantity = ?, updated_at = GETDATE() WHERE product_id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, product.getOwnerId());
+            ps.setInt(2, product.getCategoryId());
+            ps.setString(3, product.getName());
+            ps.setString(4, product.getDescription());
+            ps.setString(5, product.getOriginCountry());
+            ps.setString(6, product.getOriginRegion());
+            
+            if (product.getHarvestDate() != null) {
+                ps.setDate(7, java.sql.Date.valueOf(product.getHarvestDate()));
+            } else {
+                ps.setNull(7, Types.DATE);
+            }
+            
+            if (product.getShelfLifeDays() != null) {
+                ps.setInt(8, product.getShelfLifeDays());
+            } else {
+                ps.setNull(8, Types.INTEGER);
+            }
+            
+            ps.setString(9, product.getStorageInstruction());
+            ps.setString(10, product.getStatus());
+            ps.setInt(11, product.getViewCount());
+            ps.setBigDecimal(12, product.getRating());
+            ps.setInt(13, product.getSoldQuantity());
+            ps.setInt(14, product.getProductId());
+            ps.executeUpdate();
+        }
     }
 
     /**
-     * TODO: Implement — updateStatus(int productId, String status)
+     * Cập nhật trạng thái sản phẩm.
      */
     public void updateStatus(int productId, String status) throws SQLException {
-        // TODO: Viết SQL và xử lý ResultSet ở đây
-        throw new UnsupportedOperationException("Not implemented yet: updateStatus(int productId, String status)");
+        String sql = "UPDATE products SET status = ?, updated_at = GETDATE() WHERE product_id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, status);
+            ps.setInt(2, productId);
+            ps.executeUpdate();
+        }
     }
 
     /**
-     * TODO: Implement — incrementViewCount(int productId)
+     * Tăng số lượng lượt xem của sản phẩm.
      */
     public void incrementViewCount(int productId) throws SQLException {
-        // TODO: Viết SQL và xử lý ResultSet ở đây
-        throw new UnsupportedOperationException("Not implemented yet: incrementViewCount(int productId)");
+        String sql = "UPDATE products SET view_count = view_count + 1, updated_at = GETDATE() WHERE product_id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, productId);
+            ps.executeUpdate();
+        }
     }
 
     /** Ánh xạ ResultSet -> Product — gọi trong mọi query SELECT */
     private Product mapRow(ResultSet rs) throws SQLException {
-        // TODO: rs.getInt(), rs.getString()... theo Schema.sql
-        throw new UnsupportedOperationException("mapRow not implemented");
+        Product p = new Product();
+        p.setProductId(rs.getInt("product_id"));
+        p.setOwnerId(rs.getInt("owner_id"));
+        p.setCategoryId(rs.getInt("category_id"));
+        p.setName(rs.getString("name"));
+        p.setDescription(rs.getString("description"));
+        p.setOriginCountry(rs.getString("origin_country"));
+        p.setOriginRegion(rs.getString("origin_region"));
+        
+        java.sql.Date harvestDateVal = rs.getDate("harvest_date");
+        if (harvestDateVal != null) {
+            p.setHarvestDate(harvestDateVal.toLocalDate());
+        }
+        
+        int shelfLife = rs.getInt("shelf_life_days");
+        p.setShelfLifeDays(rs.wasNull() ? null : shelfLife);
+        
+        p.setStorageInstruction(rs.getString("storage_instruction"));
+        p.setStatus(rs.getString("status"));
+        p.setViewCount(rs.getInt("view_count"));
+        p.setRating(rs.getBigDecimal("rating"));
+        p.setSoldQuantity(rs.getInt("sold_quantity"));
+        
+        Timestamp createdAtVal = rs.getTimestamp("created_at");
+        if (createdAtVal != null) {
+            p.setCreatedAt(createdAtVal.toLocalDateTime());
+        }
+        
+        Timestamp updatedAtVal = rs.getTimestamp("updated_at");
+        if (updatedAtVal != null) {
+            p.setUpdatedAt(updatedAtVal.toLocalDateTime());
+        }
+        
+        return p;
     }
 }

@@ -1,4 +1,4 @@
-﻿package com.fruitmkt.servlet.shop;
+package com.fruitmkt.servlet.shop;
 
 import com.fruitmkt.config.AppConfig;
 import com.fruitmkt.util.SessionUtil;

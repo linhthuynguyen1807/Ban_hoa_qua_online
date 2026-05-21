@@ -1,4 +1,4 @@
-﻿package com.fruitmkt.dao;
+package com.fruitmkt.dao;
 
 import com.fruitmkt.dao.base.BaseDAO;
 import com.fruitmkt.model.entity.Order;
@@ -19,64 +19,219 @@ import java.util.*;
 public class OrderDAO extends BaseDAO {
 
     /**
-     * TODO: Implement — findById(int id)
+     * Tìm đơn hàng theo ID.
      */
     public List<Order> findById(int id) throws SQLException {
-        // TODO: Viết SQL và xử lý ResultSet ở đây
-        throw new UnsupportedOperationException("Not implemented yet: findById(int id)");
+        List<Order> list = new ArrayList<>();
+        String sql = "SELECT * FROM orders WHERE order_id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    list.add(mapRow(rs));
+                }
+            }
+        }
+        return list;
     }
 
     /**
-     * TODO: Implement — findByCustomer(int customerId, int page, int pageSize)
+     * Tìm đơn hàng theo ID khách hàng có phân trang.
      */
     public List<Order> findByCustomer(int customerId, int page, int pageSize) throws SQLException {
-        // TODO: Viết SQL và xử lý ResultSet ở đây
-        throw new UnsupportedOperationException("Not implemented yet: findByCustomer(int customerId, int page, int pageSize)");
+        List<Order> list = new ArrayList<>();
+        int offset = (page - 1) * pageSize;
+        String sql = "SELECT * FROM orders WHERE customer_id = ? ORDER BY order_id DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, customerId);
+            ps.setInt(2, offset);
+            ps.setInt(3, pageSize);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(mapRow(rs));
+                }
+            }
+        }
+        return list;
     }
 
     /**
-     * TODO: Implement — findByOwner(int ownerId, String status, int page, int pageSize)
+     * Tìm đơn hàng thuộc về chủ shop theo trạng thái có phân trang.
      */
     public List<Order> findByOwner(int ownerId, String status, int page, int pageSize) throws SQLException {
-        // TODO: Viết SQL và xử lý ResultSet ở đây
-        throw new UnsupportedOperationException("Not implemented yet: findByOwner(int ownerId, String status, int page, int pageSize)");
+        List<Order> list = new ArrayList<>();
+        int offset = (page - 1) * pageSize;
+        StringBuilder sql = new StringBuilder("SELECT * FROM orders WHERE owner_id = ? ");
+        List<Object> params = new ArrayList<>();
+        params.add(ownerId);
+        if (status != null && !status.trim().isEmpty()) {
+            sql.append("AND status = ? ");
+            params.add(status);
+        }
+        sql.append("ORDER BY order_id DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
+        params.add(offset);
+        params.add(pageSize);
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(mapRow(rs));
+                }
+            }
+        }
+        return list;
     }
 
     /**
-     * TODO: Implement — findAll(String status, int page, int pageSize)
+     * Lấy toàn bộ danh sách đơn hàng có phân trang, có thể lọc theo trạng thái.
      */
     public List<Order> findAll(String status, int page, int pageSize) throws SQLException {
-        // TODO: Viết SQL và xử lý ResultSet ở đây
-        throw new UnsupportedOperationException("Not implemented yet: findAll(String status, int page, int pageSize)");
+        List<Order> list = new ArrayList<>();
+        int offset = (page - 1) * pageSize;
+        StringBuilder sql = new StringBuilder("SELECT * FROM orders ");
+        List<Object> params = new ArrayList<>();
+        if (status != null && !status.trim().isEmpty()) {
+            sql.append("WHERE status = ? ");
+            params.add(status);
+        }
+        sql.append("ORDER BY order_id DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
+        params.add(offset);
+        params.add(pageSize);
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(mapRow(rs));
+                }
+            }
+        }
+        return list;
     }
 
     /**
-     * TODO: Implement — save(Order order)
+     * Lưu đơn hàng mới vào DB và trả về ID đơn hàng tự sinh.
      */
     public int save(Order order) throws SQLException {
-        // TODO: Viết SQL và xử lý ResultSet ở đây
-        throw new UnsupportedOperationException("Not implemented yet: save(Order order)");
+        String sql = "INSERT INTO orders (customer_id, owner_id, delivery_address, user_address, delivery_time_slot, notes, cancelled_at, cancelled_by, cancellation_reason, status, total_amount, delivery_fee, discount_amount, system_discount_amount, shop_discount_amount, platform_fee, final_amount, payment_method, refund_status, created_at, updated_at) "
+                   + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, GETDATE(), GETDATE())";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setInt(1, order.getCustomerId());
+            ps.setInt(2, order.getOwnerId());
+            ps.setString(3, order.getDeliveryAddress());
+            ps.setString(4, order.getUserAddress());
+            ps.setString(5, order.getDeliveryTimeSlot());
+            ps.setString(6, order.getNotes());
+            
+            if (order.getCancelledAt() != null) {
+                ps.setTimestamp(7, Timestamp.valueOf(order.getCancelledAt()));
+            } else {
+                ps.setNull(7, Types.TIMESTAMP);
+            }
+            
+            if (order.getCancelledBy() != null) {
+                ps.setInt(8, order.getCancelledBy());
+            } else {
+                ps.setNull(8, Types.INTEGER);
+            }
+            
+            ps.setString(9, order.getCancellationReason());
+            ps.setString(10, order.getStatus() != null ? order.getStatus() : "PENDING_PAYMENT");
+            ps.setBigDecimal(11, order.getTotalAmount() != null ? order.getTotalAmount() : java.math.BigDecimal.ZERO);
+            ps.setBigDecimal(12, order.getDeliveryFee() != null ? order.getDeliveryFee() : java.math.BigDecimal.ZERO);
+            ps.setBigDecimal(13, order.getDiscountAmount() != null ? order.getDiscountAmount() : java.math.BigDecimal.ZERO);
+            ps.setBigDecimal(14, order.getSystemDiscountAmount() != null ? order.getSystemDiscountAmount() : java.math.BigDecimal.ZERO);
+            ps.setBigDecimal(15, order.getShopDiscountAmount() != null ? order.getShopDiscountAmount() : java.math.BigDecimal.ZERO);
+            ps.setBigDecimal(16, order.getPlatformFee() != null ? order.getPlatformFee() : java.math.BigDecimal.ZERO);
+            ps.setBigDecimal(17, order.getFinalAmount() != null ? order.getFinalAmount() : java.math.BigDecimal.ZERO);
+            ps.setString(18, order.getPaymentMethod() != null ? order.getPaymentMethod() : "COD");
+            ps.setString(19, order.getRefundStatus() != null ? order.getRefundStatus() : "NONE");
+            
+            ps.executeUpdate();
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        }
+        throw new SQLException("Lưu đơn hàng thất bại, không lấy được mã khóa tự tăng.");
     }
 
     /**
-     * TODO: Implement — updateStatus(int orderId, String status)
+     * Cập nhật trạng thái đơn hàng.
      */
     public void updateStatus(int orderId, String status) throws SQLException {
-        // TODO: Viết SQL và xử lý ResultSet ở đây
-        throw new UnsupportedOperationException("Not implemented yet: updateStatus(int orderId, String status)");
+        String sql = "UPDATE orders SET status = ?, updated_at = GETDATE() WHERE order_id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, status);
+            ps.setInt(2, orderId);
+            ps.executeUpdate();
+        }
     }
 
     /**
-     * TODO: Implement — cancel(int orderId, int cancelledBy, String reason)
+     * Hủy đơn hàng.
      */
     public void cancel(int orderId, int cancelledBy, String reason) throws SQLException {
-        // TODO: Viết SQL và xử lý ResultSet ở đây
-        throw new UnsupportedOperationException("Not implemented yet: cancel(int orderId, int cancelledBy, String reason)");
+        String sql = "UPDATE orders SET status = 'CANCELLED', cancelled_at = GETDATE(), cancelled_by = ?, cancellation_reason = ?, updated_at = GETDATE() WHERE order_id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, cancelledBy);
+            ps.setString(2, reason);
+            ps.setInt(3, orderId);
+            ps.executeUpdate();
+        }
     }
 
     /** Ánh xạ ResultSet -> Order — gọi trong mọi query SELECT */
     private Order mapRow(ResultSet rs) throws SQLException {
-        // TODO: rs.getInt(), rs.getString()... theo Schema.sql
-        throw new UnsupportedOperationException("mapRow not implemented");
+        Order o = new Order();
+        o.setOrderId(rs.getInt("order_id"));
+        o.setCustomerId(rs.getInt("customer_id"));
+        o.setOwnerId(rs.getInt("owner_id"));
+        o.setDeliveryAddress(rs.getString("delivery_address"));
+        o.setUserAddress(rs.getString("user_address"));
+        o.setDeliveryTimeSlot(rs.getString("delivery_time_slot"));
+        o.setNotes(rs.getString("notes"));
+        
+        Timestamp cancelledAtVal = rs.getTimestamp("cancelled_at");
+        if (cancelledAtVal != null) {
+            o.setCancelledAt(cancelledAtVal.toLocalDateTime());
+        }
+        
+        int cancelledByVal = rs.getInt("cancelled_by");
+        o.setCancelledBy(rs.wasNull() ? null : cancelledByVal);
+        
+        o.setCancellationReason(rs.getString("cancellation_reason"));
+        o.setStatus(rs.getString("status"));
+        o.setTotalAmount(rs.getBigDecimal("total_amount"));
+        o.setDeliveryFee(rs.getBigDecimal("delivery_fee"));
+        o.setDiscountAmount(rs.getBigDecimal("discount_amount"));
+        o.setSystemDiscountAmount(rs.getBigDecimal("system_discount_amount"));
+        o.setShopDiscountAmount(rs.getBigDecimal("shop_discount_amount"));
+        o.setPlatformFee(rs.getBigDecimal("platform_fee"));
+        o.setFinalAmount(rs.getBigDecimal("final_amount"));
+        o.setPaymentMethod(rs.getString("payment_method"));
+        o.setRefundStatus(rs.getString("refund_status"));
+        
+        Timestamp createdAtVal = rs.getTimestamp("created_at");
+        if (createdAtVal != null) {
+            o.setCreatedAt(createdAtVal.toLocalDateTime());
+        }
+        
+        Timestamp updatedAtVal = rs.getTimestamp("updated_at");
+        if (updatedAtVal != null) {
+            o.setUpdatedAt(updatedAtVal.toLocalDateTime());
+        }
+        return o;
     }
 }

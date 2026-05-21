@@ -1,4 +1,4 @@
-﻿package com.fruitmkt.dao;
+package com.fruitmkt.dao;
 
 import com.fruitmkt.dao.base.BaseDAO;
 import com.fruitmkt.model.entity.Notification;

@@ -1,4 +1,4 @@
-﻿package com.fruitmkt.tag;
+package com.fruitmkt.tag;
 
 import jakarta.servlet.jsp.JspException;
 import jakarta.servlet.jsp.tagext.SimpleTagSupport;
