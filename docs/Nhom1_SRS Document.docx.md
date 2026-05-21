@@ -25,6 +25,8 @@
 
 [1.5 Entity Relationship Diagram	7](#1.5-entity-relationship-diagram)
 
+[1.6 Package Diagram	8](#1.6-package-diagram)
+
 [2\. Use Case Specifications	8](#2.-use-case-specifications)
 
 [2.1 \<\<Feature Name1\>\>	8](#2.1-\<\<feature-name1\>\>)
@@ -201,6 +203,114 @@
 | 1 | Patrol | Cafeteria’s customer information |
 | 2 | Meal | … |
 | 3 | … |  |
+
+### **1.6 Package Diagram** {#1.6-package-diagram}
+
+*[Provide the package diagram for each sub-system. The content of this section includes the overall package diagram, the explanation, and package/class naming conventions used in each package.]*
+
+#### ***1.6.1 Overall Package Diagram***
+
+	@startuml
+	skinparam packageStyle rectangle
+	skinparam shadowing false
+	skinparam linetype ortho
+	left to right direction
+
+	package "Presentation Layer" {
+		package "com.fruitmkt.servlet.auth" as auth
+		package "com.fruitmkt.servlet.guest" as guest
+		package "com.fruitmkt.servlet.customer" as customer
+		package "com.fruitmkt.servlet.shop" as shop
+		package "com.fruitmkt.servlet.admin" as admin
+		package "com.fruitmkt.servlet.delivery" as delivery
+		package "com.fruitmkt.servlet.api" as api
+	}
+
+	package "Business Layer" {
+		package "com.fruitmkt.service" as service
+	}
+
+	package "Persistence Layer" {
+		package "com.fruitmkt.dao" as dao
+		package "com.fruitmkt.dao.base" as dao_base
+	}
+
+	package "Model Layer" {
+		package "com.fruitmkt.model.entity" as entity
+		package "com.fruitmkt.model.dto" as dto
+	}
+
+	package "Support Layer" {
+		package "com.fruitmkt.config" as config
+		package "com.fruitmkt.filter" as filter
+		package "com.fruitmkt.tag" as tag
+		package "com.fruitmkt.util" as util
+	}
+
+	auth --> service
+	guest --> service
+	customer --> service
+	shop --> service
+	admin --> service
+	delivery --> service
+	api --> service
+
+	service --> dao
+	service --> dto
+	service --> entity
+	service ..> util
+
+	dao --> entity
+	dao ..> config
+	dao_base ..> config
+
+	filter ..> util
+	tag ..> util
+
+	note bottom of Support Layer
+	  Solid arrow: direct layered dependency or main call flow
+	  Dashed arrow: supporting or cross-cutting dependency
+	end note
+	@enduml
+
+#### ***1.6.2 Package Explanation***
+
+The application follows a layered architecture. Presentation-related packages such as `com.fruitmkt.servlet.*` receive HTTP requests and delegate business operations to `com.fruitmkt.service`. Service classes coordinate validation, transaction flow, and cross-module rules. DAO classes in `com.fruitmkt.dao` encapsulate all SQL access and persistence logic. Model packages provide data structures used across the system, while `com.fruitmkt.config`, `com.fruitmkt.filter`, `com.fruitmkt.tag`, and `com.fruitmkt.util` contain shared configuration, cross-cutting controls, custom JSP tags, and reusable helpers. In the diagram, solid arrows represent direct layered dependencies or primary call flow, while dashed arrows represent supporting or cross-cutting dependencies.
+
+#### ***1.6.3 Package Descriptions***
+
+| No | Package | Description |
+| :-- | :-- | :-- |
+| 01 | `com.fruitmkt.config` | Application bootstrap and shared configuration classes such as database and context setup. |
+| 02 | `com.fruitmkt.filter` | Servlet filters for encoding, authentication, role checking, CSRF protection, and request logging. |
+| 03 | `com.fruitmkt.util` | Reusable utility helpers for validation, hashing, date handling, pagination, JSON, file upload, and session access. |
+| 04 | `com.fruitmkt.tag` | Custom JSP tag classes used to format UI output and reusable view logic. |
+| 05 | `com.fruitmkt.model.entity` | Domain entity classes that represent persisted business objects. |
+| 06 | `com.fruitmkt.model.dto` | Data transfer objects used to carry aggregated or view-specific data between layers. |
+| 07 | `com.fruitmkt.dao` | Data access objects that contain all SQL queries and database interaction logic. |
+| 08 | `com.fruitmkt.dao.base` | Shared DAO base class and common persistence helpers. |
+| 09 | `com.fruitmkt.service` | Business services that implement application rules and coordinate DAO calls. |
+| 10 | `com.fruitmkt.servlet.auth` | Servlets for authentication flows such as login, logout, registration, and password recovery. |
+| 11 | `com.fruitmkt.servlet.guest` | Servlets for unauthenticated browsing and guest-facing product features. |
+| 12 | `com.fruitmkt.servlet.customer` | Servlets for customer workflows such as cart, checkout, chat, orders, reviews, returns, and notifications. |
+| 13 | `com.fruitmkt.servlet.shop` | Servlets for shop-owner workflows such as product management, inventory, promotions, settlement, and shop dashboard. |
+| 14 | `com.fruitmkt.servlet.admin` | Servlets for administrator workflows such as user management, category management, shop approval, order monitoring, reporting, and settlement control. |
+| 15 | `com.fruitmkt.servlet.delivery` | Servlets for delivery-staff workflows such as delivery assignment, tracking, and status updates. |
+| 16 | `com.fruitmkt.servlet.api` | API endpoints and webhook handlers for asynchronous integrations. |
+
+#### ***1.6.4 Naming Conventions***
+
+| Package | Package Naming Convention | Class Naming Convention |
+| :-- | :-- | :-- |
+| `com.fruitmkt.config` | Lowercase package name by responsibility area. | Configuration classes use PascalCase and usually end with `Config` (for example, `AppConfig`, `DBConfig`). |
+| `com.fruitmkt.filter` | Lowercase package name by responsibility area. | Filter classes use PascalCase and end with `Filter` (for example, `AuthFilter`, `CsrfFilter`). |
+| `com.fruitmkt.util` | Lowercase package name by responsibility area. | Utility classes use PascalCase and descriptive names, often ending with `Util` (for example, `ValidationUtil`, `SessionUtil`). |
+| `com.fruitmkt.tag` | Lowercase package name by responsibility area. | Custom tag classes use PascalCase and end with `Tag` (for example, `PermissionTag`, `PaginationTag`). |
+| `com.fruitmkt.model.entity` | Lowercase domain package name. | Entity classes use singular PascalCase nouns (for example, `Product`, `Order`, `User`). |
+| `com.fruitmkt.model.dto` | Lowercase domain package name. | DTO classes end with `DTO` (for example, `OrderSummaryDTO`, `CheckoutDTO`). |
+| `com.fruitmkt.dao` and `com.fruitmkt.dao.base` | Lowercase package name by persistence responsibility. | DAO classes end with `DAO`, and shared base classes use `BaseDAO` when needed. |
+| `com.fruitmkt.service` | Lowercase package name by business responsibility. | Service classes end with `Service` (for example, `OrderService`, `PaymentService`). |
+| `com.fruitmkt.servlet.*` | Lowercase package name by actor or feature area. | Servlet classes end with `Servlet` (for example, `LoginServlet`, `ProductManageServlet`). |
 
 ## **2\. Use Case Specifications** {#2.-use-case-specifications}
 

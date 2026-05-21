@@ -41,40 +41,40 @@ Sau khi đơn hoàn thành và qua thời gian khiếu nại, hệ thống tổn
 
 | # | Actor | Description |
 | --- | --- | --- |
-| 1 | Guest | Người chưa đăng nhập, chỉ xem sản phẩm và thao tác giỏ hàng tạm thời. |
-| 2 | Customer | Người mua hàng đã đăng ký tài khoản. |
-| 3 | Shop Owner | Chủ shop, quản lý gian hàng, sản phẩm, tồn kho, đơn hàng và voucher. |
-| 4 | Delivery Staff | Nhân viên giao hàng, cập nhật trạng thái giao nhận. |
-| 5 | Admin | Quản trị hệ thống, duyệt shop, duyệt sản phẩm, quản lý người dùng và settlement. |
-| 6 | Payment Gateway / Webhook | Hệ thống ngoài phục vụ xử lý thanh toán và cập nhật trạng thái giao dịch. |
+| 1 | Guest | Unregistered visitor who can browse products, manage a temporary cart, and place orders. A Customer account is automatically created for them upon successful checkout. |
+| 2 | Customer | Registered buyer who can manage their cart, place orders, make payments, track orders, chat with shops, submit product reviews, and request cancellations/returns/exchanges. |
+| 3 | Shop Owner | Shop seller who manages their storefront, products, inventory, orders, promotions, chat, and settlements. |
+| 4 | Delivery Staff | Courier who accepts delivery tasks and updates shipment statuses. |
+| 5 | Admin | System administrator who manages users, approves shop registrations, moderates products, and processes shop settlements. |
+| 6 | Payment Gateway / Webhook | External system that processes payments and updates transaction statuses. |
 
 ### 1.3.2 Core Use Case List
 
-| ID | Use Case | Actor | Priority | Mô tả ngắn |
+| ID | Use Case | Actor | Priority | Description |
 | --- | --- | --- | --- | --- |
-| UC-01 | Register Account | Guest | P0 | Đăng ký tài khoản Customer hoặc Shop Owner. |
-| UC-02 | Login / Logout | Guest / Customer / Shop Owner / Delivery / Admin | P0 | Xác thực người dùng vào hệ thống. |
-| UC-03 | Browse Products | Guest | P0 | Xem danh sách sản phẩm, danh mục và chi tiết. |
-| UC-04 | Search and Filter Products | Guest | P0 | Tìm kiếm theo từ khóa, giá, đánh giá, khu vực, loại trái cây. |
-| UC-05 | Manage Guest Cart | Guest | P0 | Lưu giỏ hàng tạm ở localStorage/sessionStorage. |
-| UC-06 | Manage Customer Cart | Customer | P0 | Thêm, sửa, xóa sản phẩm trong giỏ hàng. |
-| UC-07 | Place Order | Customer | P0 | Tạo đơn hàng chỉ thuộc đúng một shop. |
-| UC-08 | Make Payment | Customer | P0 | Thanh toán chuyển khoản hoặc COD. |
-| UC-09 | Track Order | Customer | P0 | Xem trạng thái đơn hàng và lịch sử mua hàng. |
-| UC-10 | Shop Registration | Customer / Shop Owner | P0 | Gửi hồ sơ đăng ký mở shop cho Admin duyệt. |
-| UC-11 | Manage Products | Shop Owner | P0 | Thêm, sửa, ẩn/hiện sản phẩm, variant và hình ảnh. |
-| UC-12 | Manage Inventory | Shop Owner | P0 | Cập nhật số lượng tồn kho, theo dõi thay đổi tồn. |
-| UC-13 | Confirm and Process Orders | Shop Owner | P0 | Xác nhận đơn, chuẩn bị hàng, bàn giao giao hàng. |
-| UC-14 | Delivery Assignment and Update | Delivery Staff | P0 | Nhận đơn giao, cập nhật trạng thái vận chuyển. |
-| UC-15 | Chat Support | Customer / Shop Owner | P1 | Nhắn tin trao đổi về đơn hàng, sản phẩm, hỗ trợ. |
-| UC-16 | Review Product | Customer | P1 | Đánh giá sản phẩm sau khi đơn hoàn thành. |
-| UC-17 | Cancel / Return / Exchange Request | Customer | P1 | Tạo yêu cầu hủy, hoàn, đổi theo chính sách. |
-| UC-18 | Manage Promotions | Shop Owner / Admin | P1 | Tạo, sửa, khóa mã giảm giá của shop hoặc hệ thống. |
-| UC-19 | Settlement Management | Admin / Shop Owner | P1 | Tổng hợp doanh thu, phí, hoàn tiền và xác nhận thanh toán cho shop. |
-| UC-20 | Recommendation | System | P2 | Gợi ý sản phẩm theo mùa, lịch sử mua hàng và sở thích. |
+| UC-01 | Register Account | Guest | P0 | Register a Customer or Shop Owner account. |
+| UC-02 | Login / Logout | Guest / Customer / Shop Owner / Delivery / Admin | P0 | Authenticate users (login/logout) in the system. |
+| UC-03 | Browse Products | Guest | P0 | Browse product lists, categories, and details. |
+| UC-04 | Search and Filter Products | Guest | P0 | Search and filter products by keyword, price, rating, location, and fruit type. |
+| UC-05 | Manage Guest Cart | Guest | P0 | Store temporary shopping cart in localStorage/sessionStorage. |
+| UC-06 | Manage Customer Cart | Customer | P0 | Add, edit, or delete items in the customer's shopping cart. |
+| UC-07 | Place Order | Guest / Customer | P0 | Place an order that belongs to exactly one shop. For Guest, checkout automatically creates a Customer account. |
+| UC-08 | Make Payment | Guest / Customer | P0 | Make a payment via bank transfer or Cash on Delivery (COD). |
+| UC-09 | Track Order | Customer | P0 | Track real-time order status and view purchase history. |
+| UC-10 | Shop Registration | Customer / Shop Owner | P0 | Submit a shop registration request for Admin approval. |
+| UC-11 | Manage Products | Shop Owner | P0 | Create, update, toggle visibility of products, variants, and images. |
+| UC-12 | Manage Inventory | Shop Owner | P0 | Update stock levels and track inventory changes. |
+| UC-13 | Confirm and Process Orders | Shop Owner | P0 | Confirm orders, prepare packaging, and assign/handover to delivery. |
+| UC-14 | Delivery Assignment and Update | Delivery Staff | P0 | Accept delivery tasks and update transit status. |
+| UC-15 | Chat Support | Customer / Shop Owner | P1 | Chat directly between customers and shop owners for order/product support. |
+| UC-16 | Review Product | Customer | P1 | Submit product reviews and ratings after order completion. |
+| UC-17 | Cancel / Return / Exchange Request | Customer | P1 | Submit order cancellation, return, or exchange requests based on policies. |
+| UC-18 | Manage Promotions | Shop Owner / Admin | P1 | Create, edit, or disable shop-specific or platform-wide promotional codes. |
+| UC-19 | Settlement Management | Admin / Shop Owner | P1 | Aggregate revenues, platform fees, refunds, and process shop settlements. |
+| UC-20 | Recommendation | System | P2 | Recommend products based on season, purchase history, and user preferences. |
 
 ### 1.3.3 Use Case Grouping by Actor
-- Guest: UC-01, UC-03, UC-04, UC-05.
+- Guest: UC-01, UC-03, UC-04, UC-05, UC-07, UC-08.
 - Customer: UC-02, UC-06, UC-07, UC-08, UC-09, UC-10, UC-15, UC-16, UC-17.
 - Shop Owner: UC-02, UC-11, UC-12, UC-13, UC-15, UC-18, UC-19.
 - Delivery Staff: UC-02, UC-14.
@@ -95,7 +95,8 @@ Shop flow: Login -> Shop Dashboard -> Product Management -> Inventory -> Order M
 | --- | --- | --- | --- | --- | --- |
 | Home / Product List / Product Detail | X | X | X | X | X |
 | Guest Cart | X |  |  |  |  |
-| Customer Cart / Checkout |  | X |  |  |  |
+| Customer Cart |  | X |  |  |  |
+| Checkout / Payment | X | X |  |  |  |
 | Order Tracking |  | X | X | X | X |
 | Shop Registration |  | X | X |  | X |
 | Shop Dashboard |  |  | X |  | X |
@@ -120,18 +121,33 @@ Shop flow: Login -> Shop Dashboard -> Product Management -> Inventory -> Order M
 | 7 | Moderation | Product / shop review workflow | Hỗ trợ admin duyệt shop và kiểm duyệt sản phẩm. |
 | 8 | Recommendation | Seasonal recommendation service | Gợi ý sản phẩm theo mùa và lịch sử mua hàng. |
 
-## 1.5 Entity Relationship Summary
+## 1.5 Entities Description
 
-| # | Entity | Description |
+In a conceptual Entity-Relationship Diagram (ERD), we focus on the **core business domain entities** that represent the main business flow: **selling, buying, payment, fulfillment, and feedback**. Pure junction tables (e.g., `order_items`, `order_promotions`) and remaining deferred entities are modeled in the physical schema.
+
+Below are the **11 Core Domain Entities** of the Online Fruit Shopping Platform (5 Strong + 6 Weak):
+
+| # | Entity | Type | Concept | Description |
+| --- | --- | --- | --- | --- |
+| 01 | `users` | **Strong** | **User** | All actors on the platform (Customers, Shop Owners, Delivery Staff, Admins). Central entity — referenced directly by products, orders, deliveries, reviews, and chat. |
+| 02 | `shop_owner_profiles` | **Weak** (of User) | **Shop** | Registered vendor storefront. Depends on `users` (1:1). Carries business state: shop_name, approval_status (PENDING→APPROVED→REJECTED→SUSPENDED), rating. |
+| 03 | `categories` | **Strong** | **Category** | Classifications for fresh fruits and agricultural goods. Referenced by `products.category_id`. |
+| 04 | `products` | **Strong** | **Product** | Agricultural listings owned by a Shop Owner User, classified by Category. Has variants and images as sub-entities. |
+| 05 | `product_variants` | **Weak** (of Product) | **Variant** | Packaging configurations (e.g., Box 1kg, Crate 10kg) with price and stock. `order_items.variant_id` references this — not `products`. |
+| 06 | `promotions` | **Strong** | **Promotion** | Voucher campaigns and coupon codes with lifecycle (valid_from → valid_until). Linked to orders via hidden junction `order_promotions`. |
+| 07 | `orders` | **Strong** | **Order** | Core purchase transactions between a Customer and a Shop Owner. Lifecycle: PENDING_PAYMENT → CONFIRMED → PREPARING → DISPATCHED → DELIVERED / CANCELLED. |
+| 08 | `payment_transactions` | **Weak** (of Order) | **Payment** | Digital payment record (SePay QR or COD). 1:1 with Order. State: pending → completed / failed / refunded / expired. |
+| 09 | `deliveries` | **Weak** (of Order) | **Delivery** | Shipping dispatch assigned to a Delivery Staff User. 1:1 with Order. State: ASSIGNED → PICKED_UP → IN_TRANSIT → DELIVERED / FAILED. |
+| 10 | `reviews` | **Weak** (of Order + User) | **Review** | Star rating and text feedback written by a Customer after order completion. Constrained to 1 review per customer per order item. |
+| 11 | `chat_sessions` | **Weak** (of User × 2) | **Chat** | Support conversation thread between a Customer and a Shop Owner. Encapsulates `chat_messages` as a sub-entity. State: ACTIVE → CLOSED. |
+
+**Deferred entities** (physical schema phase only):
+
+| Entity | Role | Depends On |
 | --- | --- | --- |
-| 1 | users | Người dùng hệ thống với nhiều vai trò. |
-| 2 | shop_owner_profiles | Hồ sơ shop của người bán. |
-| 3 | categories | Danh mục trái cây. |
-| 4 | products | Thông tin sản phẩm chính. |
-| 5 | product_variants | Biến thể sản phẩm theo khối lượng, loại, độ chín. |
-| 6 | product_images | Hình ảnh sản phẩm. |
-| 7 | cart, cart_items | Giỏ hàng và dòng hàng. |
-| 8 | orders, order_items | Đơn hàng và chi tiết đơn hàng. |
+| `shop_settlements` | Periodic financial settlement payouts | `users` (owner) |
+| `return_requests` | Cancellation / refund / exchange requests | `orders` |
+| `cart` / `cart_items` | Shopping cart state (guest uses localStorage) | `users` / `product_variants` |
 # 3. Functional Requirements
 
 ## 3.0 Section Guideline
@@ -154,8 +170,6 @@ Description: Allows a Guest to create a Customer or Shop Owner account. Related 
 | Email | Required; unique; valid email format. |
 | Phone | Optional; max 15 characters. |
 | Password | Required; 8-64 characters; stored as hash. |
-| Account Type | Customer or Shop Owner. |
-| Verification Code | Required when email/phone verification is enabled. |
 
 #### 3.1.1.2 Login Screen
 

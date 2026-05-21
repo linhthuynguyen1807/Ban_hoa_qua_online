@@ -52,25 +52,46 @@ This section follows the template structure Feature -> SubFeature -> Screen/Func
 
 #### 3.1.1.1 Register Page
 
-UI Layout: Registration form with account type selector, verification area, and submit button.
+Content #1: UI Layout
 
-Description: Allows a Guest to create a Customer or Shop Owner account. Related UC-01 and UC-10.
+Responsive register page with a branded introduction panel on the left and a form card on the right. The form card should include grouped inputs for identity, credentials, and account setup. On desktop, the page should feel like a guided onboarding screen with clear hierarchy, while on mobile it should collapse into a single-column form with the primary action always visible.
+
+Content #2: Brief Description
+
+Allows a Guest to create a new Customer or Shop Owner account for UC-01. The screen supports manual sign-up and Google OAuth sign-up, validates email uniqueness and password rules, and routes shop owner accounts to Pending Approval when the business rule requires admin review. If the user arrives here from a protected action such as checkout, the page must preserve the return intent after successful registration.
+
+Content #3: Component / Field Specification
+
+Field Group: Identity
 
 | Field Name | Description |
 | --- | --- |
-| Full Name | Required; 3-100 characters. |
-| Email | Required; unique; valid email format. |
-| Phone | Optional; max 15 characters. |
-| Password | Required; 8-64 characters; stored as hash. |
-| Confirm Password | Must match Password. |
-| Account Type | Customer or Shop Owner. |
-| Verification Code | One-time code when verification is enabled. |
+| Full Name | Required text input; 3-100 characters; initial value blank. |
+| Email | Required email input; unique; 5-254 characters; initial value blank. |
+| Phone Number | Optional text input; up to 15 characters; initial value blank. |
 
-Checklist:
-- Email must be unique.
-- Password must comply with the system password policy.
-- Account type must be selected before submission.
-- If verification is enabled, the account becomes active only after verification.
+Field Group: Credentials
+
+| Field Name | Description |
+| --- | --- |
+| Password | Required password input; 8-64 characters; masked entry; stored only as a hash after submission. |
+| Confirm Password | Required password input; must match Password exactly; initial value blank. |
+
+Field Group: Account Setup and Security
+
+| Field Name | Description |
+| --- | --- |
+| Verification Code | Conditional input shown only when email or OTP verification is enabled. |
+| Register with Google | Secondary action button that starts Google OAuth sign-up. |
+| Register Button | Primary action button that submits the form. |
+| Login Link | Navigation link that returns existing users to the Login Page. |
+
+Behavior Notes:
+- Email must be unique before the account is created.
+- Password and Confirm Password must match before submission succeeds.
+- Shop Owner registration must create a Pending Approval account when admin review is required.
+- Google OAuth registration must create the account without a password when the email is new.
+- Validation errors must stay on the form and show field-level messages instead of clearing the page.
 
 #### 3.1.1.2 Login Page
 
@@ -1208,3 +1229,81 @@ Checklist:
 - Keep the Field Name / Description tables intact so they can be pasted into DOCX without structural changes.
 - If needed, this Section 3 can be split further into three files: Authentication, Commerce Flow, and Administration.
 - This file has been standardized by screen/function to align with the UI checklist and the core SRS.
+
+---
+
+## 3.10 Context Diagram Components for Copy-Paste
+
+### 3.10.1 System process label
+
+| Component type | Copy-paste label |
+| --- | --- |
+| System process | `0. Online Fruit Shop System` |
+| System boundary | `System boundary` |
+
+### 3.10.2 External entities
+
+| External entity | Copy-paste label | Meaning in the diagram |
+| --- | --- | --- |
+| Guest | `Guest` | Anonymous user who browses and prepares a temporary cart |
+| Customer | `Customer` | Authenticated buyer who places orders and uses after-sales features |
+| Shop Owner | `Shop Owner` | Merchant who manages shop, products, inventory, orders, promotions, and settlement |
+| Delivery Staff | `Delivery Staff` | Fulfillment actor who updates delivery progress |
+| Admin | `Admin` | System administrator who manages approval, moderation, monitoring, and master data |
+| Payment Gateway / Bank | `Payment Gateway / Bank` | External payment provider that confirms or rejects transactions |
+| Scheduler / Timer | `Scheduler / Timer` | Time-based trigger for settlement batch jobs |
+
+### 3.10.3 Data flow labels from external entities to the system
+
+| External entity | Data flow labels into system |
+| --- | --- |
+| Guest | `search criteria`, `keyword`, `category selection`, `price range`, `rating filter`, `shop region filter`, `sort order`, `registration data`, `login credentials`, `password reset request`, `verification code`, `guest cart data`, `guest cart snapshot` |
+| Customer | `cart data`, `cart item quantity`, `shipping address`, `delivery time slot`, `order note`, `voucher code`, `payment method selection`, `payment request`, `cancel request`, `return request`, `exchange request`, `review content`, `star rating`, `chat message` |
+| Shop Owner | `shop registration data`, `shop profile data`, `product master data`, `product description`, `origin data`, `harvest date`, `shelf life data`, `variant data`, `SKU data`, `price data`, `stock update`, `inventory adjustment data`, `order action`, `promotion data`, `chat reply`, `settlement note` |
+| Delivery Staff | `assignment acceptance`, `pickup confirmation`, `delivery status update`, `failed delivery reason`, `proof of delivery` |
+| Admin | `approval decision`, `rejection reason`, `suspension decision`, `moderation action`, `category data`, `user management data`, `setting data`, `monitoring query`, `settlement action`, `audit request` |
+| Payment Gateway / Bank | `payment callback`, `transaction result`, `transaction reference`, `signature data`, `reconciliation response` |
+| Scheduler / Timer | `batch trigger` |
+
+### 3.10.4 Data flow labels from the system to external entities
+
+| External entity | Data flow labels from system |
+| --- | --- |
+| Guest | `product catalog`, `product list`, `product detail data`, `search result list`, `featured product list`, `promotion banner data`, `recommendation data`, `authentication result`, `verification result`, `password reset result`, `cart state`, `validation message` |
+| Customer | `order confirmation`, `order code`, `order summary`, `payment instruction`, `payment status`, `payment expiry`, `order history data`, `tracking data`, `status timeline`, `delivery information`, `return status`, `exchange status`, `review status`, `notification`, `chat thread` |
+| Shop Owner | `order queue`, `order detail`, `product list`, `inventory state`, `sales summary`, `dashboard summary`, `report data`, `settlement summary`, `customer message`, `approval result`, `notification`, `chat thread` |
+| Delivery Staff | `delivery assignment`, `order detail`, `route information`, `status timeline`, `delivery instruction` |
+| Admin | `approval queue`, `dashboard summary`, `monitoring data`, `report data`, `alert data`, `audit log`, `setting detail`, `settlement list`, `notification` |
+| Payment Gateway / Bank | `payment initiation`, `callback reference`, `reconciliation data` |
+| Scheduler / Timer | `batch result`, `settlement status`, `error log` |
+
+### 3.10.5 Standard labels to use on the diagram
+
+- Use one system process label only: `0. Online Fruit Shop System`.
+- Use one boundary label only: `System boundary`.
+- Use external entity labels exactly as listed above.
+- Use noun phrases for data flows, not verbs or screen names.
+- Do not add internal services, database tables, controllers, or UI pages to the context diagram.
+
+### 3.10.6 Minimal copy-paste set for a clean context diagram
+
+If you want a compact diagram, copy only these items:
+
+| Item | Label |
+| --- | --- |
+| Process | `0. Online Fruit Shop System` |
+| Entities | `Guest`, `Customer`, `Shop Owner`, `Delivery Staff`, `Admin`, `Payment Gateway / Bank`, `Scheduler / Timer` |
+| Guest in | `search criteria`, `registration data`, `login credentials`, `guest cart data` |
+| Guest out | `product catalog`, `search result list`, `authentication result`, `cart state` |
+| Customer in | `cart data`, `shipping address`, `payment request`, `review content`, `return request`, `chat message` |
+| Customer out | `order confirmation`, `payment status`, `tracking data`, `notification` |
+| Shop Owner in | `product master data`, `inventory adjustment data`, `order action`, `promotion data` |
+| Shop Owner out | `order queue`, `dashboard summary`, `report data`, `settlement summary` |
+| Delivery Staff in | `delivery status update`, `failed delivery reason` |
+| Delivery Staff out | `delivery assignment`, `order detail` |
+| Admin in | `approval decision`, `moderation action`, `monitoring query`, `settlement action` |
+| Admin out | `approval queue`, `monitoring data`, `audit log`, `settlement list` |
+| Payment Gateway in | `payment callback`, `transaction result` |
+| Payment Gateway out | `payment initiation`, `reconciliation data` |
+| Scheduler in | `batch trigger` |
+| Scheduler out | `batch result`, `settlement status` |
