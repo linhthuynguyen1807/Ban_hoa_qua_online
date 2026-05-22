@@ -87,20 +87,11 @@ public class RegisterServlet extends HttpServlet {
             user.setRole(role);
 
             // 4. Khởi tạo Service và Xử lý Đăng Ký
-            AuthService authService = new AuthService();
-            User newUser = authService.register(user);
+            String storeName = req.getParameter("storeName");
+            String address = req.getParameter("address");
 
-            // 5. Xử lý Logic riêng biệt dựa theo ROLE (Phân tách theo Spec)
-            if ("SHOP_OWNER".equals(role)) {
-                // Tạo mới Profile cho Shop
-                // String storeName = req.getParameter("storeName");
-                // ShopProfileService shopService = new ShopProfileService();
-                // shopService.createProfile(newUser.getUserId(), storeName);
-            } else if ("CUSTOMER".equals(role)) {
-                // Tạo một Cart trống mặc định (nếu cần theo rule)
-                // CartService cartService = new CartService();
-                // cartService.initCartForCustomer(newUser.getUserId());
-            }
+            AuthService authService = new AuthService();
+            User newUser = authService.register(user, storeName, address);
 
             // 6. Xử lý thành công - Sử dụng Pattern PRG với Flash Message
             SessionUtil.flashSuccess(req.getSession(), "Đăng ký thành công! Vui lòng đăng nhập.");
