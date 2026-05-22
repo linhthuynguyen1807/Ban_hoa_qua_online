@@ -24,18 +24,48 @@ public class AuthService {
      * TODO: Implement — xem SRS / use case tương ứng
      */
     public User register(com.fruitmkt.model.entity.User user) throws SQLException, Exception {
-        // TODO: Validate input → gọi DAO → business rule → return result
+        return register(user, null, null);
+    }
+
+    public User register(com.fruitmkt.model.entity.User user, String shopName, String shopAddress) throws SQLException, Exception {
+        // Validate input
+        if (user.getFullName() == null || user.getFullName().trim().isEmpty()) {
+            throw new Exception("Họ và tên không được để trống!");
+        }
+        if (user.getEmail() == null || user.getEmail().trim().isEmpty()) {
+            throw new Exception("Email không được để trống!");
+        }
+        if (user.getPasswordHash() == null || user.getPasswordHash().trim().isEmpty()) {
+            throw new Exception("Mật khẩu không được để trống!");
+        }
+
         if (userDAO.findByEmail(user.getEmail()) != null) {
             throw new Exception("Email này đã tồn tại trong hệ thống, Hãy đăng nhập!");
         }
 
         // Băm mật khẩu để bảo mật trước khi đưa xuống DAO
-        // Lưu ý: Nếu HashUtil có hàm hashPassword, hãy dùng nó.
         String hashedPass = HashUtil.hashPassword(user.getPasswordHash()); 
 
         // Hàm save hoặc insert của DAO
         int insertedId = userDAO.saveNewCustomer(user.getFullName(), user.getEmail(), hashedPass, user.getPhone(), user.getRole());
         if (insertedId > 0) {
+            // Tự động khởi tạo giỏ hàng hoặc profile cửa hàng dựa trên vai trò
+            if ("CUSTOMER".equals(user.getRole())) {
+                com.fruitmkt.dao.CartDAO cartDAO = new com.fruitmkt.dao.CartDAO();
+                cartDAO.createForCustomer(insertedId);
+            } else if ("SHOP_OWNER".equals(user.getRole())) {
+                com.fruitmkt.model.entity.ShopProfile profile = new com.fruitmkt.model.entity.ShopProfile();
+                profile.setUserId(insertedId);
+                profile.setShopName(shopName != null && !shopName.trim().isEmpty() ? shopName : "Cửa hàng của " + user.getFullName());
+                profile.setShopDescription("Chào mừng tới cửa hàng của chúng tôi!");
+                profile.setApprovalStatus("PENDING");
+                profile.setDeliveryAddress(shopAddress != null ? shopAddress : user.getUserAddress());
+                profile.setRating(java.math.BigDecimal.ZERO);
+
+                com.fruitmkt.dao.ShopProfileDAO shopProfileDAO = new com.fruitmkt.dao.ShopProfileDAO();
+                shopProfileDAO.save(profile);
+            }
+
             // Lấy lại user vừa tạo để Set vào session
             return userDAO.findByEmail(user.getEmail()); 
         }
@@ -112,6 +142,11 @@ public class AuthService {
 
             // Insert role mặc định CUSTOMER qua DAO
             int newId = userDAO.saveNewCustomer(fullName, email, hashedPass, null, "CUSTOMER");
+            
+            // Tự động khởi tạo giỏ hàng cho tài khoản Google mới
+            com.fruitmkt.dao.CartDAO cartDAO = new com.fruitmkt.dao.CartDAO();
+            cartDAO.createForCustomer(newId);
+
             return userDAO.findByEmail(email);
         }
     }
