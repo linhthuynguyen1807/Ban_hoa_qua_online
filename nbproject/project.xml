@@ -7,8 +7,25 @@
             <minimum-ant-version>1.6.5</minimum-ant-version>
             <web-module-libraries>
                 <library dirs="200">
-                    <file>${file.reference.lib-library}</file>
-                    <path-in-war>WEB-INF/classes</path-in-war>
+                    <file>${file.reference.jackson-annotations-2.15.2.jar}</file>
+                </library>
+                <library dirs="200">
+                    <file>${file.reference.jackson-core-2.15.2.jar}</file>
+                </library>
+                <library dirs="200">
+                    <file>${file.reference.jackson-databind-2.15.2.jar}</file>
+                </library>
+                <library dirs="200">
+                    <file>${file.reference.jakarta.servlet.jsp.jstl-3.0.1.jar}</file>
+                </library>
+                <library dirs="200">
+                    <file>${file.reference.jakarta.servlet.jsp.jstl-api-3.0.0.jar}</file>
+                </library>
+                <library dirs="200">
+                    <file>${file.reference.jbcrypt-0.4.jar}</file>
+                </library>
+                <library dirs="200">
+                    <file>${file.reference.mssql-jdbc-13.4.0.jre11.jar}</file>
                 </library>
             </web-module-libraries>
             <web-module-additional-libraries/>
@@ -22,5 +39,6 @@
         <libraries xmlns="http://www.netbeans.org/ns/ant-project-libraries/1">
             <definitions>.\lib\nblibraries.properties</definitions>
         </libraries>
+        <libraries xmlns="http://www.netbeans.org/ns/cdnjs-libraries/1"/>
     </configuration>
 </project>

@@ -169,7 +169,7 @@ Tuyệt đối không sử dụng các chuỗi văn bản tự do (Magic Strings
 ### 3. Tận dụng Custom Tag Library (JSTL Custom Tags)
 Để giữ cho các trang JSP sạch sẽ, không dùng code Java phức tạp, bắt buộc sử dụng Taglib bằng cách khai báo:
 ```jsp
-<%@ taglib prefix="ft" uri="/WEB-INF/tags/fruitmkt.tld" %>
+<%@ taglib prefix="ft" uri="/WEB-INF/tld/fruitmkt.tld" %>
 ```
 *   **Hiển thị tiền tệ VNĐ**: `<ft:currency value="${product.price}"/>` (Đầu ra: `150.000 đ` thay vì `150000.0000`).
 *   **Sao đánh giá**: `<ft:stars rating="${product.rating}" showValue="true"/>` (Đầu ra: `★★★★☆ (4.2)`).

@@ -72,7 +72,7 @@ web/
   WEB-INF/
     web.xml                      ← Session config, error pages
     lib/                         ← ← ← ĐẶT JAR VÀO ĐÂY
-    tags/
+    tld/
       fruitmkt.tld               ← Tag Library Descriptor
     jsp/
       common/                    ← header.jsp, footer.jsp, navbar.jsp, alert.jsp, error.jsp
@@ -147,7 +147,7 @@ private static final String DB_PASSWORD = "your_password_here";  // ← Password
 
 Khai báo đầu file JSP:
 ```jsp
-<%@ taglib prefix="ft" uri="/WEB-INF/tags/fruitmkt.tld" %>
+<%@ taglib prefix="ft" uri="/WEB-INF/tld/fruitmkt.tld" %>
 ```
 
 | Tag | Cú pháp | Output |

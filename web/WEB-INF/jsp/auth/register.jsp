@@ -137,7 +137,7 @@
                 <input type="hidden" name="_csrf" value="${sessionScope._csrfToken}">
                 
                 <!-- Dynamic Account Type Selector (Hidden Input + Tailwind Tabs) -->
-                <input type="hidden" id="accountType" name="accountType" value="CUSTOMER">
+                <input type="hidden" id="accountType" name="accountType" value="<c:out value="${not empty param.accountType ? param.accountType : 'CUSTOMER'}"/>">
                 
                 <div class="flex p-1.5 bg-emerald-100/60 rounded-xl max-w-md mx-auto border border-emerald-200/50 shadow-inner">
                     <button type="button" onclick="switchTab('CUSTOMER')" id="tabCustomer"
@@ -166,7 +166,7 @@
                             <div class="relative">
                                 <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">person</span>
                                 <input class="w-full pl-9 pr-4 py-2.5 bg-white/70 border border-outline/30 focus:border-primary focus:ring-1 focus:ring-primary rounded-lg text-sm transition-all outline-none placeholder:text-outline-variant/60" 
-                                       id="fullName" name="fullName" placeholder="Nhập họ và tên của bạn" type="text" required minlength="3" maxlength="100">
+                                       id="fullName" name="fullName" value="<c:out value="${param.fullName}"/>" placeholder="Nhập họ và tên của bạn" type="text" required minlength="3" maxlength="100">
                             </div>
                         </div>
 
@@ -176,7 +176,7 @@
                             <div class="relative">
                                 <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">call</span>
                                 <input class="w-full pl-9 pr-4 py-2.5 bg-white/70 border border-outline/30 focus:border-primary focus:ring-1 focus:ring-primary rounded-lg text-sm transition-all outline-none placeholder:text-outline-variant/60" 
-                                       id="phone" name="phone" placeholder="Nhập số điện thoại" type="tel" required maxlength="15">
+                                       id="phone" name="phone" value="<c:out value="${param.phone}"/>" placeholder="Nhập số điện thoại" type="tel" required maxlength="15">
                             </div>
                         </div>
                     </div>
@@ -187,7 +187,7 @@
                         <div class="relative">
                             <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">mail</span>
                             <input class="w-full pl-9 pr-4 py-2.5 bg-white/70 border border-outline/30 focus:border-primary focus:ring-1 focus:ring-primary rounded-lg text-sm transition-all outline-none placeholder:text-outline-variant/60" 
-                                   id="email" name="email" placeholder="ví dụ: tenban@email.com" type="email" required>
+                                   id="email" name="email" value="<c:out value="${param.email}"/>" placeholder="ví dụ: tenban@email.com" type="email" required>
                         </div>
                     </div>
 
@@ -236,7 +236,7 @@
                             <div class="relative">
                                 <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">storefront</span>
                                 <input class="w-full pl-9 pr-4 py-2.5 bg-white/70 border border-outline/30 focus:border-primary focus:ring-1 focus:ring-primary rounded-lg text-sm transition-all outline-none placeholder:text-outline-variant/60" 
-                                       id="storeName" name="storeName" placeholder="VD: Nông trại hữu cơ xanh" type="text">
+                                       id="storeName" name="storeName" value="<c:out value="${param.storeName}"/>" placeholder="VD: Nông trại hữu cơ xanh" type="text">
                             </div>
                         </div>
                         
@@ -246,7 +246,7 @@
                             <div class="relative">
                                 <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">contact_mail</span>
                                 <input class="w-full pl-9 pr-4 py-2.5 bg-white/70 border border-outline/30 focus:border-primary focus:ring-1 focus:ring-primary rounded-lg text-sm transition-all outline-none placeholder:text-outline-variant/60" 
-                                       id="businessEmail" name="businessEmail" placeholder="email@doanhnghiep.com" type="email">
+                                       id="businessEmail" name="businessEmail" value="<c:out value="${param.businessEmail}"/>" placeholder="email@doanhnghiep.com" type="email">
                             </div>
                         </div>
                     </div>
@@ -257,7 +257,7 @@
                         <div class="relative">
                             <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">pin_drop</span>
                             <input class="w-full pl-9 pr-4 py-2.5 bg-white/70 border border-outline/30 focus:border-primary focus:ring-1 focus:ring-primary rounded-lg text-sm transition-all outline-none placeholder:text-outline-variant/60" 
-                                   id="address" name="address" placeholder="Nhập số nhà, tên đường, phường/xã, quận/huyện..." type="text">
+                                   id="address" name="address" value="<c:out value="${param.address}"/>" placeholder="Nhập số nhà, tên đường, phường/xã, quận/huyện..." type="text">
                         </div>
                     </div>
 
@@ -431,6 +431,12 @@
                 label.innerHTML = `Kéo và thả tài liệu vào đây hoặc <span class="text-primary font-bold">chọn tệp từ thiết bị</span>`;
             }
         }
+
+        // Auto restore correct tab on DOM content load
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentType = document.getElementById('accountType').value;
+            switchTab(currentType);
+        });
     </script>
 </body>
 </html>

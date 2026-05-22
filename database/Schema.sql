@@ -11,8 +11,8 @@ CREATE TABLE users (
     email NVARCHAR(255) NOT NULL UNIQUE,
     password_hash NVARCHAR(255) NULL,
     phone NVARCHAR(15) NULL,
-    role NVARCHAR(20) NOT NULL CHECK (role IN ('CUSTOMER','SHOP_OWNER','DELIVERY','ADMIN')),
-    status NVARCHAR(20) NOT NULL CHECK (status IN ('ACTIVE','INACTIVE')),
+    role NVARCHAR(20) NOT NULL DEFAULT 'CUSTOMER' CHECK (role IN ('CUSTOMER','SHOP_OWNER','DELIVERY','ADMIN')),
+    status NVARCHAR(20) NOT NULL DEFAULT 'ACTIVE' CHECK (status IN ('ACTIVE','INACTIVE'))
     user_address NVARCHAR(500) NULL,
 
     is_email_verified BIT NOT NULL DEFAULT 0,
@@ -69,7 +69,7 @@ CREATE TABLE products (
     harvest_date DATE NULL,
     shelf_life_days INT NULL,
     storage_instruction NVARCHAR(300) NULL,
-    status NVARCHAR(20) NOT NULL CHECK (status IN ('ACTIVE','INACTIVE')),
+    status NVARCHAR(20) NOT NULL DEFAULT 'ACTIVE' CHECK (status IN ('ACTIVE','INACTIVE')),
     view_count INT NOT NULL DEFAULT 0,
     rating DECIMAL(3,2) NOT NULL DEFAULT 0,
     sold_quantity INT NOT NULL DEFAULT 0,

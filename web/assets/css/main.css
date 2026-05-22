@@ -10,26 +10,26 @@
 
 /* ── 1. CSS Custom Properties (Design Tokens) ─────────────────────────────── */
 :root {
-    /* Brand Colors */
-    --color-primary:        #E8662B;   /* Cam đặc trưng của trái cây */
-    --color-primary-dark:   #C4501E;
-    --color-primary-light:  #FFE5D4;
+    /* Brand Colors (Upgraded to Verdant Market Emerald Premium Palette) */
+    --color-primary:        #4D661C;   /* Emerald Green */
+    --color-primary-dark:   #364E03;   /* Deep Emerald Forest */
+    --color-primary-light:  #D9F99D;   /* Bright Lime/Mint Accent */
 
-    --color-success:        #2E7D32;
-    --color-warning:        #F57C00;
-    --color-danger:         #C62828;
-    --color-info:           #0277BD;
+    --color-success:        #1B5E20;   /* Deep Green */
+    --color-warning:        #E65100;
+    --color-danger:         #B71C1C;
+    --color-info:           #0D47A1;
 
     /* Neutrals */
-    --color-bg:             #FAFAF8;
+    --color-bg:             #F4FBF7;   /* Clean Premium Soft Mint Background */
     --color-surface:        #FFFFFF;
-    --color-border:         #E0E0E0;
-    --color-text-primary:   #212121;
-    --color-text-secondary: #757575;
-    --color-text-muted:     #BDBDBD;
+    --color-border:         #E2ECE7;   /* Soft Sage border */
+    --color-text-primary:   #00210D;   /* High-contrast Deep Greenish-Black */
+    --color-text-secondary: #44483B;
+    --color-text-muted:     #8E9285;
 
     /* Typography */
-    --font-family:          'Inter', 'Segoe UI', system-ui, sans-serif;
+    --font-family:          'Plus Jakarta Sans', 'Lexend', 'Inter', system-ui, sans-serif;
     --font-size-xs:         0.75rem;    /* 12px */
     --font-size-sm:         0.875rem;   /* 14px */
     --font-size-base:       1rem;       /* 16px */
@@ -91,25 +91,219 @@ a:hover { text-decoration: underline; }
 .main-content { padding-top: var(--navbar-height); min-height: calc(100vh - var(--navbar-height)); }
 
 /* ── 4. Navbar ─────────────────────────────────────────────────────────────── */
+/* ── 4. Navbar (Organic Glassmorphism) ───────────────────────────────────────── */
 .navbar {
     position: fixed; top: 0; left: 0; right: 0;
     height: var(--navbar-height);
-    background: var(--color-surface);
-    border-bottom: 1px solid var(--color-border);
-    box-shadow: var(--shadow-sm);
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    border-bottom: 1px solid rgba(77, 102, 28, 0.1);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
     z-index: 1000;
+    transition: all 0.3s ease;
 }
 .navbar__inner {
-    display: flex; align-items: center; gap: var(--space-4);
+    display: flex; align-items: center; justify-content: space-between;
     height: 100%;
 }
-.navbar__logo { font-size: var(--font-size-xl); font-weight: 700; color: var(--color-primary); }
-.navbar__search { display: flex; flex: 1; max-width: 400px; }
-.navbar__search input { flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius-md) 0 0 var(--radius-md); padding: var(--space-2) var(--space-3); }
-.navbar__search button { border-radius: 0 var(--radius-md) var(--radius-md) 0; }
-.navbar__menu { display: flex; list-style: none; gap: var(--space-4); margin-left: auto; }
-.navbar__menu a { color: var(--color-text-primary); font-weight: 500; }
-.navbar__menu a:hover { color: var(--color-primary); text-decoration: none; }
+.navbar__logo {
+    display: flex; align-items: center; gap: var(--space-2);
+    font-size: var(--font-size-xl); font-weight: 800;
+    color: var(--color-primary); transition: transform 0.2s ease;
+}
+.navbar__logo:hover {
+    transform: scale(1.03);
+    text-decoration: none;
+}
+.navbar__logo .logo-icon {
+    background: var(--color-primary-light);
+    color: var(--color-primary);
+    width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: var(--radius-md);
+    font-size: 1.1rem;
+    box-shadow: var(--shadow-sm);
+}
+.navbar__logo .logo-text {
+    font-family: 'Lexend', sans-serif;
+    letter-spacing: -0.5px;
+}
+.navbar__logo .text-highlight {
+    color: #84cc16; /* Fresh Lime accent */
+}
+
+/* Search Box style */
+.navbar__search {
+    display: flex; flex: 1; max-width: 460px;
+    margin: 0 var(--space-6);
+}
+.navbar__search .search-wrapper {
+    display: flex; width: 100%; position: relative;
+}
+.navbar__search input {
+    width: 100%;
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-full);
+    padding: var(--space-2) var(--space-12) var(--space-2) var(--space-4);
+    font-size: var(--font-size-sm);
+    font-family: inherit;
+    transition: all 0.25s ease;
+    background: rgba(244, 251, 247, 0.6);
+}
+.navbar__search input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(77, 102, 28, 0.12);
+}
+.navbar__search button {
+    position: absolute; right: 4px; top: 4px; bottom: 4px;
+    width: 36px; height: 36px; border: none;
+    background: var(--color-primary); color: #fff;
+    border-radius: var(--radius-full);
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s ease;
+}
+.navbar__search button:hover {
+    background: var(--color-primary-dark);
+    transform: scale(1.05);
+}
+
+/* Menu links style */
+.navbar__menu {
+    display: flex; list-style: none; gap: var(--space-4); align-items: center;
+}
+.navbar__menu li { display: flex; align-items: center; }
+.navbar__menu .menu-link {
+    color: var(--color-text-primary);
+    font-weight: 600;
+    font-size: var(--font-size-sm);
+    display: flex; align-items: center; gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-md);
+    transition: all 0.2s ease;
+}
+.navbar__menu .menu-link:hover {
+    color: var(--color-primary);
+    background: rgba(77, 102, 28, 0.08);
+    text-decoration: none;
+}
+.navbar__menu .menu-link i {
+    font-size: 1.05rem; opacity: 0.85;
+}
+
+/* Specific Menu Link styles */
+.highlight-shop { color: #0284c7 !important; }
+.highlight-shop:hover { background: rgba(2, 132, 199, 0.08) !important; }
+.highlight-delivery { color: #d97706 !important; }
+.highlight-delivery:hover { background: rgba(217, 119, 6, 0.08) !important; }
+.highlight-admin { color: #7c3aed !important; }
+.highlight-admin:hover { background: rgba(124, 58, 237, 0.08) !important; }
+
+/* Premium Cart Button */
+.navbar__cart-btn {
+    display: flex; align-items: center; gap: var(--space-2);
+    background: var(--color-primary-light);
+    color: var(--color-primary-dark);
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-full);
+    font-weight: 700; font-size: var(--font-size-sm);
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(77, 102, 28, 0.08);
+}
+.navbar__cart-btn:hover {
+    background: var(--color-primary);
+    color: #fff;
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(77, 102, 28, 0.2);
+}
+.navbar__cart-btn:hover .cart-badge-count {
+    background: #fff;
+    color: var(--color-primary-dark);
+}
+.cart-icon-wrapper {
+    position: relative; display: flex; align-items: center;
+}
+.cart-icon-wrapper i { font-size: 1.1rem; }
+.cart-badge-count {
+    position: absolute; top: -8px; right: -8px;
+    background: var(--color-primary-dark);
+    color: #fff;
+    font-size: 10px; font-weight: 800;
+    min-width: 16px; height: 16px;
+    border-radius: var(--radius-full);
+    display: flex; align-items: center; justify-content: center;
+    padding: 0 4px;
+    border: 1.5px solid var(--color-primary-light);
+    transform: translate(25%, -25%);
+    transition: all 0.2s ease;
+}
+
+/* User profile nav elements */
+.navbar__user-profile {
+    display: flex; align-items: center; gap: var(--space-2);
+    border-left: 2px solid var(--color-border);
+    padding-left: var(--space-4);
+    margin-left: var(--space-2);
+}
+.user-avatar {
+    width: 32px; height: 32px;
+    border-radius: var(--radius-full);
+    background: rgba(77, 102, 28, 0.1);
+    color: var(--color-primary);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem;
+}
+.user-greeting {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+}
+.user-name {
+    color: var(--color-primary-dark);
+}
+.logout-btn {
+    color: var(--color-text-muted);
+    font-size: 1.1rem;
+    padding: var(--space-1);
+    border-radius: var(--radius-sm);
+    transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center;
+}
+.logout-btn:hover {
+    color: var(--color-danger);
+    background: rgba(183, 28, 28, 0.08);
+}
+
+/* Standard Nav Action Buttons */
+.nav-btn {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    padding: var(--space-2) var(--space-4);
+    font-size: var(--font-size-sm); font-weight: 700;
+    border-radius: var(--radius-full);
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+.nav-btn-secondary {
+    background: transparent;
+    border: 1.5px solid var(--color-primary);
+    color: var(--color-primary);
+}
+.nav-btn-secondary:hover {
+    background: rgba(77, 102, 28, 0.05);
+    text-decoration: none;
+}
+.nav-btn-primary {
+    background: var(--color-primary);
+    color: #fff;
+    border: 1.5px solid var(--color-primary);
+}
+.nav-btn-primary:hover {
+    background: var(--color-primary-dark);
+    border-color: var(--color-primary-dark);
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(77, 102, 28, 0.25);
+}
 
 /* ── 5. Buttons ────────────────────────────────────────────────────────────── */
 .btn {
@@ -228,10 +422,161 @@ tr:hover td { background: var(--color-primary-light); }
 .auth-form h1 { margin-bottom: var(--space-6); font-size: var(--font-size-2xl); }
 
 /* ── 14. Footer ────────────────────────────────────────────────────────────── */
+/* ── 14. Footer (Premium Organic Aesthetic) ────────────────────────────────── */
 .site-footer {
-    background: #1a1a1a; color: #ccc;
-    padding: var(--space-8) 0; margin-top: var(--space-16);
-    text-align: center; font-size: var(--font-size-sm);
+    background: #0f1912;
+    color: #bcc3be;
+    padding: var(--space-12) 0 0 0;
+    margin-top: var(--space-16);
+    font-family: inherit;
+    border-top: 4px solid var(--color-primary);
+}
+.footer__grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1.2fr 1.5fr;
+    gap: var(--space-8);
+    padding-bottom: var(--space-12);
+}
+.footer__col {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+.footer__col-brand {
+    padding-right: var(--space-4);
+}
+.footer__logo {
+    display: flex; align-items: center; gap: var(--space-2);
+    font-size: var(--font-size-xl); font-weight: 800;
+    color: #fff; text-decoration: none;
+}
+.footer__logo:hover { text-decoration: none; }
+.footer__logo .logo-icon {
+    background: var(--color-primary);
+    color: #fff;
+    width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: var(--radius-md);
+}
+.footer__logo .logo-text { font-family: 'Lexend', sans-serif; letter-spacing: -0.5px; }
+.footer__logo .text-highlight { color: #84cc16; }
+.footer__description {
+    font-size: var(--font-size-sm);
+    line-height: 1.6;
+    color: #929b95;
+}
+.footer__socials {
+    display: flex; gap: var(--space-3);
+    margin-top: var(--space-2);
+}
+.social-link {
+    width: 36px; height: 36px;
+    border-radius: var(--radius-full);
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.25s ease;
+    text-decoration: none;
+}
+.social-link:hover {
+    background: var(--color-primary);
+    color: #fff;
+    transform: translateY(-3px);
+    text-decoration: none;
+}
+
+.footer__title {
+    font-family: 'Lexend', sans-serif;
+    color: #fff;
+    font-size: var(--font-size-base);
+    font-weight: 700;
+    position: relative;
+    padding-bottom: var(--space-2);
+    margin-bottom: var(--space-2);
+}
+.footer__title::after {
+    content: '';
+    position: absolute; left: 0; bottom: 0;
+    width: 40px; height: 2.5px;
+    background: var(--color-primary);
+    border-radius: var(--radius-full);
+}
+.footer__links {
+    list-style: none;
+    display: flex; flex-direction: column;
+    gap: var(--space-2);
+}
+.footer__links a {
+    color: #bcc3be;
+    font-size: var(--font-size-sm);
+    display: flex; align-items: center; gap: var(--space-2);
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+.footer__links a:hover {
+    color: #84cc16;
+    text-decoration: none;
+    transform: translateX(4px);
+}
+.footer__links a i {
+    font-size: 0.65rem; opacity: 0.7;
+}
+
+.footer__contact-info {
+    font-size: var(--font-size-sm);
+    display: flex; gap: var(--space-3);
+    align-items: flex-start;
+    line-height: 1.5;
+    color: #bcc3be;
+}
+.footer__contact-info i {
+    color: var(--color-primary);
+    font-size: 1rem;
+    margin-top: 3px;
+}
+
+.footer__payments {
+    display: flex; flex-direction: column; gap: var(--space-2);
+    margin-top: var(--space-4);
+    border-top: 1px dashed rgba(255, 255, 255, 0.1);
+    padding-top: var(--space-4);
+}
+.payment-title {
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: #929b95;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.payment-badges {
+    display: flex; flex-wrap: wrap; gap: var(--space-2);
+}
+.payment-badge {
+    display: inline-flex; align-items: center; gap: var(--space-1);
+    font-size: 10px; font-weight: 700;
+    padding: 3px var(--space-2);
+    border-radius: var(--radius-sm);
+    color: #fff;
+    background: rgba(255, 255, 255, 0.05);
+}
+.payment-badge.vietqr { background: linear-gradient(135deg, #004b93, #0076a3); }
+.payment-badge.sepay { background: linear-gradient(135deg, #10b981, #047857); }
+.payment-badge.cod { background: #b45309; }
+
+.footer__bottom {
+    background: #080d09;
+    padding: var(--space-4) 0;
+    margin-top: var(--space-8);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+.footer__bottom-inner {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: var(--font-size-xs);
+    color: #6a726d;
+}
+.footer__bottom-inner .compliance {
+    display: flex; align-items: center; gap: var(--space-1);
+    color: #10b981;
 }
 
 /* ── 15. Utilities ─────────────────────────────────────────────────────────── */

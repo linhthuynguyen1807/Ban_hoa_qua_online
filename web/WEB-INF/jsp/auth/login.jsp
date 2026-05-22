@@ -150,7 +150,7 @@
                         <div class="relative">
                             <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">mail</span>
                             <input class="w-full pl-9 pr-4 py-2.5 bg-white/70 border border-outline/30 focus:border-primary focus:ring-1 focus:ring-primary rounded-lg text-sm transition-all outline-none placeholder:text-outline-variant/60" 
-                                   id="email" name="email" placeholder="Nhập email của bạn" type="email" required>
+                                   id="email" name="email" value="<c:out value="${param.email}"/>" placeholder="Nhập email của bạn" type="email" required>
                         </div>
                     </div>
 

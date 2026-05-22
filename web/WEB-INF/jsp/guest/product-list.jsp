@@ -1,7 +1,7 @@
 ﻿<%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c"  uri="jakarta.tags.core" %>
 <%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
-<%@ taglib prefix="ft" uri="/WEB-INF/tags/fruitmkt.tld" %>
+<%@ taglib prefix="ft" uri="/WEB-INF/tld/fruitmkt.tld" %>
 <jsp:include page="/WEB-INF/jsp/common/header.jsp"><jsp:param name="pageTitle" value="Sản phẩm"/></jsp:include>
 
 <%-- Servlet set: pagedResult (PagedResultDTO), categories, currentFilter (Map) --%>

@@ -1,42 +1,114 @@
-﻿<%-- navbar.jsp — Thanh điều hướng chính.
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
+<%-- navbar.jsp — Thanh điều hướng chính.
      Hiển thị khác nhau tuỳ theo login state và role.
      Dùng ft:allow để ẩn/hiện menu theo role.
 --%>
 <%@ taglib prefix="c"  uri="jakarta.tags.core" %>
-<%@ taglib prefix="ft" uri="/WEB-INF/tags/fruitmkt.tld" %>
+<%@ taglib prefix="ft" uri="/WEB-INF/tld/fruitmkt.tld" %>
 <nav class="navbar">
     <div class="container navbar__inner">
-        <a href="/" class="navbar__logo">🍊 FruitMkt</a>
+        <a href="${pageContext.request.contextPath}/home" class="navbar__logo">
+            <span class="logo-icon"><i class="fa-solid fa-seedling"></i></span>
+            <span class="logo-text">Meta<span class="text-highlight">Fruit</span></span>
+        </a>
 
-        <form action="/products" method="get" class="navbar__search">
-            <input type="text" name="q" placeholder="Tìm hoa quả..." value="">
-            <button type="submit">Tìm</button>
+        <form action="${pageContext.request.contextPath}/home" method="get" class="navbar__search">
+            <div class="search-wrapper">
+                <input type="text" name="keyword" placeholder="Tìm hoa quả sạch nhập khẩu, hữu cơ..." value="<c:out value="${param.keyword}"/>">
+                <button type="submit" aria-label="Tìm kiếm">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </div>
         </form>
 
         <ul class="navbar__menu">
-            <li><a href="/products">Sản phẩm</a></li>
+            <li>
+                <a href="${pageContext.request.contextPath}/home" class="menu-link">
+                    <i class="fa-solid fa-apple-whole"></i> Sản phẩm
+                </a>
+            </li>
+            <li>
+                <a href="#about" class="menu-link">
+                    <i class="fa-solid fa-info-circle"></i> Giới thiệu
+                </a>
+            </li>
+            <li>
+                <a href="#contact" class="menu-link">
+                    <i class="fa-solid fa-envelope"></i> Liên hệ
+                </a>
+            </li>
 
             <c:choose>
-                <c:when test="">
-                    <%-- Menu theo role --%>
+                <c:when test="${not empty sessionScope.currentUser}">
                     <ft:allow role="SHOP_OWNER">
-                        <li><a href="/shop/dashboard">Shop</a></li>
+                        <li>
+                            <a href="${pageContext.request.contextPath}/home" class="menu-link">
+                                <i class="fa-solid fa-store"></i> Cửa hàng
+                            </a>
+                        </li>
+                        <li>
+                            <a href="${pageContext.request.contextPath}/shop/dashboard" class="menu-link highlight-shop">
+                                <i class="fa-solid fa-shop"></i> Kênh người bán
+                            </a>
+                        </li>
                     </ft:allow>
                     <ft:allow role="DELIVERY">
-                        <li><a href="/delivery/dashboard">Giao hàng</a></li>
+                        <li>
+                            <a href="${pageContext.request.contextPath}/delivery/dashboard" class="menu-link highlight-delivery">
+                                <i class="fa-solid fa-truck-ramp-box"></i> Tài xế
+                            </a>
+                        </li>
                     </ft:allow>
                     <ft:allow role="ADMIN">
-                        <li><a href="/admin/dashboard">Admin</a></li>
+                        <li>
+                            <a href="${pageContext.request.contextPath}/admin/dashboard" class="menu-link highlight-admin">
+                                <i class="fa-solid fa-user-shield"></i> Admin
+                            </a>
+                        </li>
                     </ft:allow>
-                    <li><a href="/cart">Giỏ hàng</a></li>
-                    <li class="navbar__user">
-                        <span></span>
-                        <a href="/auth/logout">Đăng xuất</a>
+                    
+                    <li>
+                        <a href="${pageContext.request.contextPath}/cart" class="navbar__cart-btn">
+                            <span class="cart-icon-wrapper">
+                                <i class="fa-solid fa-basket-shopping"></i>
+                                <span id="cart-badge" class="cart-badge-count">0</span>
+                            </span>
+                            <span class="cart-text">Giỏ hàng</span>
+                        </a>
+                    </li>
+                    
+                    <li class="navbar__user-profile">
+                        <div class="user-avatar">
+                            <i class="fa-solid fa-user-circle"></i>
+                        </div>
+                        <span class="user-greeting">
+                            Chào, <strong class="user-name"><c:out value="${sessionScope.currentUser.fullName}"/></strong>
+                        </span>
+                        <a href="${pageContext.request.contextPath}/auth/logout" class="logout-btn" title="Đăng xuất">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                        </a>
                     </li>
                 </c:when>
                 <c:otherwise>
-                    <li><a href="/auth/login">Đăng nhập</a></li>
-                    <li><a href="/auth/register">Đăng ký</a></li>
+                    <li>
+                        <a href="${pageContext.request.contextPath}/cart" class="navbar__cart-btn guest-cart-btn">
+                            <span class="cart-icon-wrapper">
+                                <i class="fa-solid fa-basket-shopping"></i>
+                                <span id="cart-badge" class="cart-badge-count">0</span>
+                            </span>
+                            <span class="cart-text">Giỏ hàng</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="${pageContext.request.contextPath}/auth/login" class="nav-btn nav-btn-secondary">
+                            <i class="fa-solid fa-right-to-bracket"></i> Đăng nhập
+                        </a>
+                    </li>
+                    <li>
+                        <a href="${pageContext.request.contextPath}/auth/register" class="nav-btn nav-btn-primary">
+                            Đăng ký
+                        </a>
+                    </li>
                 </c:otherwise>
             </c:choose>
         </ul>

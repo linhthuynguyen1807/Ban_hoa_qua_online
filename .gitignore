@@ -31,3 +31,4 @@ replay_pid*
 /.github
 /.understand-anything
 /build/
+/dist/

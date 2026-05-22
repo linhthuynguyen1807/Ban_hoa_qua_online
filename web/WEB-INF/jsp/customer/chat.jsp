@@ -1,6 +1,6 @@
 ﻿<%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c"  uri="jakarta.tags.core" %>
-<%@ taglib prefix="ft" uri="/WEB-INF/tags/fruitmkt.tld" %>
+<%@ taglib prefix="ft" uri="/WEB-INF/tld/fruitmkt.tld" %>
 <jsp:include page="/WEB-INF/jsp/common/header.jsp"><jsp:param name="pageTitle" value="Chat với shop"/></jsp:include>
 <%--
     PAGE: Chat với shop

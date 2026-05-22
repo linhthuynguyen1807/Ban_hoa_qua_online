@@ -107,10 +107,10 @@ public class RegisterServlet extends HttpServlet {
             resp.sendRedirect(req.getContextPath() + "/auth/login");
 
         } catch (Throwable e) {
-            // 7. Xử lý Lỗi - Đẩy message về lại form JSP
+            // 7. Xử lý Lỗi - Đẩy message về lại form JSP thông qua Request Attributes và Forward
             e.printStackTrace(); // Log ra console NetBeans
-            SessionUtil.flashError(req.getSession(), "Lỗi hệ thống: " + e.getMessage());
-            resp.sendRedirect(req.getContextPath() + "/auth/register");
+            req.setAttribute("errorMsg", e.getMessage());
+            req.getRequestDispatcher("/WEB-INF/jsp/auth/register.jsp").forward(req, resp);
         }
     }
 

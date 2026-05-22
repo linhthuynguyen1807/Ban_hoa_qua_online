@@ -20,7 +20,7 @@ public class CurrencyFormatTag extends SimpleTagSupport {
     public void doTag() throws JspException, IOException {
         if (value == null) { getJspContext().getOut().write("N/A"); return; }
         // TODO: Tuỳ chỉnh format nếu cần
-        NumberFormat fmt = NumberFormat.getNumberInstance(new Locale("vi", "VN"));
+        NumberFormat fmt = NumberFormat.getNumberInstance(Locale.of("vi", "VN"));
         fmt.setMinimumFractionDigits(0);
         getJspContext().getOut().write(fmt.format(value) + " đ");
     }

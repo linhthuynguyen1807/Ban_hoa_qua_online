@@ -1,4 +1,4 @@
-﻿<%-- header.jsp — Include vào đầu mỗi JSP page.
+<%-- header.jsp — Include vào đầu mỗi JSP page.
      Khai báo taglib, set content type, include alert và navbar.
 
      CÁCH DÙNG:
@@ -6,22 +6,28 @@
            <jsp:param name="pageTitle" value="Tên trang"/>
        </jsp:include>
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
 <%@ taglib prefix="c"   uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <%@ taglib prefix="fn"  uri="jakarta.tags.functions" %>
-<%@ taglib prefix="ft"  uri="/WEB-INF/tags/fruitmkt.tld" %>
+<%@ taglib prefix="ft"  uri="/WEB-INF/tld/fruitmkt.tld" %>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><c:out value=""/> — FruitMkt</title>
+    <title><c:out value="${param.pageTitle}"/> — MetaFruit Premium</title>
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="/assets/css/main.css">
-    <%-- Thêm CSS trang cụ thể nếu cần: --%>
-    <%-- <link rel="stylesheet" href="/assets/css/pages/home.css"> --%>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/main.css">
 </head>
 <body>
     <%-- Navbar --%>

@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE taglib
-  PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.2//EN"
-  "http://java.sun.com/dtd/web-jsptaglibrary_1_2.dtd">
-
 <!--
   fruitmkt.tld — Tag Library Descriptor cho custom tags của dự án.
 
   CÁCH DÙNG TRONG JSP:
-    <%@ taglib prefix="ft" uri="/WEB-INF/tags/fruitmkt.tld" %>
+    <%@ taglib prefix="ft" uri="/WEB-INF/tld/fruitmkt.tld" %>
 
   Sau đó dùng:
     <ft:currency value="${product.price}"/>
@@ -18,22 +14,24 @@
 
   Tag classes nằm trong package: com.fruitmkt.tag
 -->
-<taglib>
-    <tlib-version>1.0</tlib-version>
-    <jsp-version>1.2</jsp-version>
-    <short-name>ft</short-name>
-    <uri>/WEB-INF/tags/fruitmkt.tld</uri>
+<taglib xmlns="https://jakarta.ee/xml/ns/jakartaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-jsptaglibrary_3_0.xsd"
+        version="3.0">
     <description>FruitMkt Custom Tag Library</description>
+    <tlib-version>1.0</tlib-version>
+    <short-name>ft</short-name>
+    <uri>/WEB-INF/tld/fruitmkt.tld</uri>
 
     <!-- ================================================================
          ft:currency — Format số tiền VND
          Ví dụ: <ft:currency value="${item.price}"/> → "150.000 ₫"
          ================================================================ -->
     <tag>
+        <description>Format số tiền sang định dạng VND. Ví dụ: 150000 → 150.000 ₫</description>
         <name>currency</name>
         <tag-class>com.fruitmkt.tag.CurrencyFormatTag</tag-class>
         <body-content>empty</body-content>
-        <description>Format số tiền sang định dạng VND. Ví dụ: 150000 → 150.000 ₫</description>
         <attribute>
             <name>value</name>
             <required>true</required>
@@ -47,10 +45,10 @@
          Ví dụ: <ft:stars rating="${product.rating}"/> → ★★★★☆
          ================================================================ -->
     <tag>
+        <description>Render star rating từ 1 đến 5. Hỗ trợ nửa sao.</description>
         <name>stars</name>
         <tag-class>com.fruitmkt.tag.StarRatingTag</tag-class>
         <body-content>empty</body-content>
-        <description>Render star rating từ 1 đến 5. Hỗ trợ nửa sao.</description>
         <attribute>
             <name>rating</name>
             <required>true</required>
@@ -61,7 +59,7 @@
             <name>showValue</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
+            <type>java.lang.Boolean</type>
         </attribute>
     </tag>
 
@@ -70,10 +68,10 @@
          Ví dụ: <ft:orderStatus code="${order.status}"/> → badge HTML
          ================================================================ -->
     <tag>
+        <description>Render badge HTML có màu cho order status (DELIVERED=xanh, CANCELLED=đỏ...)</description>
         <name>orderStatus</name>
         <tag-class>com.fruitmkt.tag.OrderStatusTag</tag-class>
         <body-content>empty</body-content>
-        <description>Render badge HTML có màu cho order status (DELIVERED=xanh, CANCELLED=đỏ...)</description>
         <attribute>
             <name>code</name>
             <required>true</required>
@@ -87,21 +85,21 @@
          Ví dụ: <ft:pagination current="${page}" total="${totalPages}" baseUrl="/products?cat=1"/>
          ================================================================ -->
     <tag>
+        <description>Render thanh phân trang với Prev/Next và các số trang</description>
         <name>pagination</name>
         <tag-class>com.fruitmkt.tag.PaginationTag</tag-class>
         <body-content>empty</body-content>
-        <description>Render thanh phân trang với Prev/Next và các số trang</description>
         <attribute>
             <name>current</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
-            <type>int</type>
+            <type>java.lang.Integer</type>
         </attribute>
         <attribute>
             <name>total</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
-            <type>int</type>
+            <type>java.lang.Integer</type>
         </attribute>
         <attribute>
             <name>baseUrl</name>
@@ -116,10 +114,10 @@
          Ví dụ: <ft:allow role="ADMIN"><a href="/admin">Admin</a></ft:allow>
          ================================================================ -->
     <tag>
+        <description>Render body content chỉ khi user có role khớp</description>
         <name>allow</name>
         <tag-class>com.fruitmkt.tag.PermissionTag</tag-class>
-        <body-content>JSP</body-content>
-        <description>Render body content chỉ khi user có role khớp</description>
+        <body-content>scriptless</body-content>
         <attribute>
             <name>role</name>
             <required>true</required>
